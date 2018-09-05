@@ -40,8 +40,12 @@
 #include <System/machine/cpu_capabilities.h>
 #include <bootstrap.h>
 #include <CommonCrypto/CommonDigest.h>
+
+#if !defined(__PUREDARWIN__)
 #include <sandbox.h>
 #include <sandbox/private.h>
+#endif /* !defined(__PUREDARWIN__) */
+
 #include <dispatch/dispatch.h>
 
 #include "LaunchCache.h"
@@ -67,13 +71,13 @@ namespace loader {
 
 static bool sandboxBlocked(const char* path, const char* kind)
 {
-#if BUILDING_LIBDYLD || !TARGET_IPHONE_SIMULATOR
+#if (BUILDING_LIBDYLD || !TARGET_IPHONE_SIMULATOR) && !defined(__PUREDARWIN__)
     sandbox_filter_type filter = (sandbox_filter_type)(SANDBOX_FILTER_PATH | SANDBOX_CHECK_NO_REPORT);
     return ( sandbox_check(getpid(), kind, filter, path) > 0 );
-#else
+#else /* (!BUILDING_LIBDYLD && TARGET_IPHONE_SIMULATOR) || defined(__PUREDARWIN__) */
     // sandbox calls not yet supported in dyld_sim
     return false;
-#endif
+#endif /* (BUILDING_LIBDYLD || !TARGET_IPHONE_SIMULATOR) && !defined(__PUREDARWIN__) */
 }
 
 static bool sandboxBlockedMmap(const char* path)

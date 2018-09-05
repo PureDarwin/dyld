@@ -312,6 +312,13 @@
 			remoteGlobalIDString = 37A0AD0A1C15FFF500731E50;
 			remoteInfo = update_dyld_shared_cache;
 		};
+		AA8A9E2D20391BA10070CCFB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F9ED4C8B0630A72300DF4E74 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F9AB02B71F329FAA00EE96C4;
+			remoteInfo = libclosured;
+		};
 		D8668ACF1ECE335F005E7D31 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = F9ED4C8B0630A72300DF4E74 /* Project object */;
@@ -332,13 +339,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = F9AB02B71F329FAA00EE96C4;
 			remoteInfo = libclosured;
-		};
-		F922C81D1F33B96300D8F479 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = F9ED4C8B0630A72300DF4E74 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = F922C8161F33B73800D8F479;
-			remoteInfo = "libclosured-stub";
 		};
 		F94182D71E60F0BE00D8EF25 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -1331,7 +1331,7 @@
 				F9574C4906C94DA700142BFA /* PBXBuildRule */,
 			);
 			dependencies = (
-				F922C81E1F33B96300D8F479 /* PBXTargetDependency */,
+				AA8A9E2E20391BA10070CCFB /* PBXTargetDependency */,
 			);
 			name = libdyld.dylib;
 			productName = libdyld;
@@ -1980,6 +1980,11 @@
 			target = 37A0AD0A1C15FFF500731E50 /* update_dyld_shared_cache */;
 			targetProxy = 37A0AD0E1C16000F00731E50 /* PBXContainerItemProxy */;
 		};
+		AA8A9E2E20391BA10070CCFB /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F9AB02B71F329FAA00EE96C4 /* libclosured */;
+			targetProxy = AA8A9E2D20391BA10070CCFB /* PBXContainerItemProxy */;
+		};
 		D8668AD01ECE335F005E7D31 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = F97C61A61DBAD1A900A84CD7 /* dyld_closure_util */;
@@ -1994,11 +1999,6 @@
 			isa = PBXTargetDependency;
 			target = F9AB02B71F329FAA00EE96C4 /* libclosured */;
 			targetProxy = F922C8111F33B62700D8F479 /* PBXContainerItemProxy */;
-		};
-		F922C81E1F33B96300D8F479 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = F922C8161F33B73800D8F479 /* libclosured-stub */;
-			targetProxy = F922C81D1F33B96300D8F479 /* PBXContainerItemProxy */;
 		};
 		F94182D81E60F0BE00D8EF25 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;

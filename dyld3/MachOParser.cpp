@@ -37,7 +37,11 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/mman.h>
+
+#if !defined(__PUREDARWIN__)
 #include <rootless.h>
+#endif /* !defined(__PUREDARWIN__) */
+
 #include <dirent.h>
 #include <mach/mach.h>
 #include <mach/machine.h>

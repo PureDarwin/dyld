@@ -59,8 +59,11 @@
 #include <System/machine/cpu_capabilities.h>
 #include <System/sys/reason.h>
 #include <kern/kcdata.h>
+
+#if !defined(__PUREDARWIN__)
 #include <sandbox.h>
 #include <sandbox/private.h>
+#endif /* !defined(__PUREDARWIN__) */
 
 extern "C" int __fork();
 
@@ -110,7 +113,9 @@ extern "C" int __fork();
 #include "dyldLibSystemInterface.h"
 #include "dyld_cache_format.h"
 #include "dyld_process_info_internal.h"
+#if !defined(__PUREDARWIN__)
 #include <coreSymbolicationDyldSupport.h>
+#endif /* !defined(__PUREDARWIN__) */
 #if TARGET_IPHONE_SIMULATOR
 	extern "C" void xcoresymbolication_load_notifier(void *connection, uint64_t load_timestamp, const char *image_path, const struct mach_header *mach_header);
 	extern "C" void xcoresymbolication_unload_notifier(void *connection, uint64_t unload_timestamp, const char *image_path, const struct mach_header *mach_header);
@@ -955,7 +960,9 @@ static void notifySingle(dyld_image_states state, const ImageLoader* image, Imag
 					  dyld::gProcessInfo->coreSymbolicationShmPage, loadTimestamp, image->machHeader(), image->getPath());
 		}
 		if ( dyld::gProcessInfo->coreSymbolicationShmPage != NULL) {
+			#if !defined(__PUREDARWIN__)
 			coresymbolication_unload_notifier(dyld::gProcessInfo->coreSymbolicationShmPage, loadTimestamp, image->getPath(), image->machHeader());
+			#endif /* !defined(__PUREDARWIN__) */
 		}
 		for (int slot=0; slot < DYLD_MAX_PROCESS_INFO_NOTIFY_COUNT; ++slot) {
 			if ( dyld::gProcessInfo->notifyPorts[slot] != 0 ) {
@@ -1151,7 +1158,9 @@ static void notifyBatchPartial(dyld_image_states state, bool orLater, dyld_image
 						dyld::log("dyld: coresymbolication_load_notifier(%p, 0x%016llX, %p, %s)\n",
 								  dyld::gProcessInfo->coreSymbolicationShmPage, loadTimestamp, infos[j].imageLoadAddress, infos[j].imageFilePath);
 					}
+					#if !defined(__PUREDARWIN__)
 					coresymbolication_load_notifier(dyld::gProcessInfo->coreSymbolicationShmPage, loadTimestamp, infos[j].imageFilePath, infos[j].imageLoadAddress);
+					#endif /* !defined(__PUREDARWIN__) */
 				}
 			}
 			for (int slot=0; slot < DYLD_MAX_PROCESS_INFO_NOTIFY_COUNT; ++slot) {
@@ -1224,13 +1233,13 @@ static void setRunInitialzersOldWay()
 
 static bool sandboxBlocked(const char* path, const char* kind)
 {
-#if TARGET_IPHONE_SIMULATOR
+#if TARGET_IPHONE_SIMULATOR || defined(__PUREDARWIN__)
 	// sandbox calls not yet supported in simulator runtime
 	return false;
-#else
+#else /* !(TARGET_IPHONE_SIMULATOR && defined(__PUREDARWIN__)) */
 	sandbox_filter_type filter = (sandbox_filter_type)(SANDBOX_FILTER_PATH | SANDBOX_CHECK_NO_REPORT);
 	return ( sandbox_check(getpid(), kind, filter, path) > 0 );
-#endif
+#endif /* TARGET_IPHONE_SIMULATOR || defined(__PUREDARWIN__) */
 }
 
 bool sandboxBlockedMmap(const char* path)
@@ -4814,8 +4823,13 @@ static SyscallHelpers sSysCalls = {
 		&readdir_r,
 		&closedir,
 		// added in version 4
+#if !defined(__PUREDARWIN__)
 		&coresymbolication_load_notifier,
 		&coresymbolication_unload_notifier,
+#else /* defined(__PUREDARWIN__) */
+		NULL,
+		NULL,
+#endif /* !defined(__PUREDARWIN__) */
 		// Added in version 5
 		&proc_regionfilename,
 		&getpid,

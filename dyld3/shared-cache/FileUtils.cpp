@@ -38,7 +38,10 @@
 #include <dispatch/dispatch.h>
 #include <mach-o/dyld.h>
 #include <System/sys/csr.h>
+
+#if !defined(__PUREDARWIN__)
 #include <rootless.h>
+#endif /* !defined(__PUREDARWIN__) */
 
 #include <string>
 #include <fstream>
@@ -147,14 +150,21 @@ static bool sipIsEnabled()
 
 bool isProtectedBySIP(const std::string& path)
 {
+    #if defined(__PUREDARWIN__) /* No SIP on PureDarwin */
+    return false;
+    #else /* !defined(__PUREDARWIN__) */
     if ( !sipIsEnabled() )
         return false;
 
     return (rootless_check_trusted(path.c_str()) == 0);
+    #endif /* defined(__PUREDARWIN__) */
 }
 
 bool isProtectedBySIP(int fd)
 {
+#if defined(__PUREDARWIN__)
+    return false;
+#else /* !defined(__PUREDARWIN__) */
     if ( !sipIsEnabled() )
         return false;
 
@@ -167,6 +177,7 @@ bool isProtectedBySIP(int fd)
         return (rootless_check_trusted(realPath) == 0);
     return false;
 #endif
+#endif /* defined(__PUREDARWIN__) */
 }
 
 bool fileExists(const std::string& path)

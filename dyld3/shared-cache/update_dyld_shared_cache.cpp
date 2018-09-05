@@ -43,11 +43,15 @@
 #include <sys/sysctl.h>
 #include <sys/resource.h>
 #include <dirent.h>
+
+#if !defined(__PUREDARWIN__)
 #include <rootless.h>
 #include <dscsym.h>
+#include <Bom/Bom.h>
+#endif /* !defined(__PUREDARWIN__) */
+
 #include <dispatch/dispatch.h>
 #include <pthread/pthread.h>
-#include <Bom/Bom.h>
 #include <CoreFoundation/CoreFoundation.h>
 
 #include <algorithm>
