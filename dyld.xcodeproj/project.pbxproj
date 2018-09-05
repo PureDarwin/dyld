@@ -595,7 +595,6 @@
 		F97C61A11D9CA6B800A84CD7 /* Logging.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Logging.h; path = dyld3/Logging.h; sourceTree = "<group>"; usesTabs = 0; };
 		F97C61A71DBAD1A900A84CD7 /* dyld_closure_util */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = dyld_closure_util; sourceTree = BUILT_PRODUCTS_DIR; };
 		F97FF3561C23638F000ACDD2 /* nocr */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = nocr; sourceTree = BUILT_PRODUCTS_DIR; };
-		F97FF3581C23638F000ACDD2 /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 		F97FF35F1C236402000ACDD2 /* nocr.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = nocr.c; path = testing/nocr/nocr.c; sourceTree = "<group>"; };
 		F97FF3631C237F5C000ACDD2 /* nocr.1 */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.man; name = nocr.1; path = ../../../testing/nocr/nocr.1; sourceTree = "<group>"; };
 		F981BB8B170FC24400A686D6 /* dyldSyscallInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = dyldSyscallInterface.h; path = src/dyldSyscallInterface.h; sourceTree = "<group>"; };
@@ -908,14 +907,6 @@
 			path = configs;
 			sourceTree = SOURCE_ROOT;
 		};
-		F97FF3571C23638F000ACDD2 /* nocr */ = {
-			isa = PBXGroup;
-			children = (
-				F97FF3581C23638F000ACDD2 /* main.c */,
-			);
-			path = nocr;
-			sourceTree = "<group>";
-		};
 		F98692161DC3EF7700CBEDE6 /* shared-cache */ = {
 			isa = PBXGroup;
 			children = (
@@ -975,7 +966,6 @@
 				F9ED4CBB0630A7AA00DF4E74 /* src */,
 				F9ED4CC30630A7BE00DF4E74 /* doc */,
 				F9ED4CBE0630A7B100DF4E74 /* include */,
-				F97FF3571C23638F000ACDD2 /* nocr */,
 				F9ED4C990630A76000DF4E74 /* Products */,
 				F96D19A41D9363B7007AF3CE /* dyld3 */,
 				F939373D0A94FC4700070A07 /* launch-cache */,
