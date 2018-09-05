@@ -6,3 +6,4 @@ dyld.xcodeproj/xcuserdata/
 .DS_Store
 .pyc
 
+/darwinbuild.xcconfig
