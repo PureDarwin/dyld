@@ -168,7 +168,6 @@
 		F98692201DC3F99300CBEDE6 /* Diagnostics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F986921B1DC3F07C00CBEDE6 /* Diagnostics.cpp */; };
 		F98692211DC401B900CBEDE6 /* MachOParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F96D19BE1D94A6DC007AF3CE /* MachOParser.cpp */; };
 		F98692231DC403F900CBEDE6 /* AdjustDylibSegments.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F98692091DC3EF6C00CBEDE6 /* AdjustDylibSegments.cpp */; };
-		F988F0BB1E2FDF5B003AED79 /* execserver.defs in Sources */ = {isa = PBXBuildFile; fileRef = F988F0BA1E2FDF5B003AED79 /* execserver.defs */; settings = {ATTRIBUTES = (Server, ); }; };
 		F98C78F00F7C02E8006257D2 /* dsc_iterator.h in usr|local|include|mach-o */ = {isa = PBXBuildFile; fileRef = F9F2A56F0F7AEEE300B7C9EB /* dsc_iterator.h */; };
 		F98F1FBD1E4029E400EF868D /* dyld_priv.h in Headers */ = {isa = PBXBuildFile; fileRef = F9ED4CE90630A80600DF4E74 /* dyld_priv.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		F98F1FBF1E4031F800EF868D /* dyld_process_info.h in Headers */ = {isa = PBXBuildFile; fileRef = F95090D01C5AB89A0031F81D /* dyld_process_info.h */; settings = {ATTRIBUTES = (Private, ); }; };
@@ -621,7 +620,6 @@
 		F986921D1DC3F86C00CBEDE6 /* CacheBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CacheBuilder.h; path = "dyld3/shared-cache/CacheBuilder.h"; sourceTree = "<group>"; usesTabs = 0; };
 		F986921E1DC3F86C00CBEDE6 /* dyld_cache_format.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = dyld_cache_format.h; path = "dyld3/shared-cache/dyld_cache_format.h"; sourceTree = "<group>"; usesTabs = 0; };
 		F98692221DC4028B00CBEDE6 /* CodeSigningTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CodeSigningTypes.h; path = dyld3/CodeSigningTypes.h; sourceTree = "<group>"; usesTabs = 0; };
-		F988F0BA1E2FDF5B003AED79 /* execserver.defs */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.mig; name = execserver.defs; path = testing/nocr/execserver.defs; sourceTree = "<group>"; };
 		F98D274C0AA79D7400416316 /* dyld_images.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = dyld_images.h; path = "include/mach-o/dyld_images.h"; sourceTree = "<group>"; };
 		F99986FA1F198C0C00D523F5 /* dyld-potential-framework-overrides */ = {isa = PBXFileReference; explicitFileType = text; name = "dyld-potential-framework-overrides"; path = "dyld3/dyld-potential-framework-overrides"; sourceTree = "<group>"; };
 		F99B8E620FEC11B400701838 /* dyld_shared_cache_util.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dyld_shared_cache_util.cpp; sourceTree = "<group>"; };
@@ -960,7 +958,6 @@
 		F9ED4C870630A72200DF4E74 = {
 			isa = PBXGroup;
 			children = (
-				F988F0BA1E2FDF5B003AED79 /* execserver.defs */,
 				F9F6F4261C1FAF8000BD8FED /* testing */,
 				F971DD121A4A0E0700BBDD52 /* configs */,
 				F9ED4CBB0630A7AA00DF4E74 /* src */,
@@ -1843,7 +1840,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				F97FF3611C23640C000ACDD2 /* nocr.c in Sources */,
-				F988F0BB1E2FDF5B003AED79 /* execserver.defs in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
