@@ -27,6 +27,7 @@
 #include <sys/mman.h>
 #include <mach/mach.h>
 #include <mach/mach_time.h>
+#include <mach-o/dyld.h>
 #include <limits.h>
 #include <stdarg.h>
 #include <stdio.h>
@@ -43,15 +44,11 @@
 #include <sys/sysctl.h>
 #include <sys/resource.h>
 #include <dirent.h>
-
-#if !defined(__PUREDARWIN__)
 #include <rootless.h>
 #include <dscsym.h>
-#include <Bom/Bom.h>
-#endif /* !defined(__PUREDARWIN__) */
-
 #include <dispatch/dispatch.h>
 #include <pthread/pthread.h>
+#include <Bom/Bom.h>
 #include <CoreFoundation/CoreFoundation.h>
 
 #include <algorithm>
@@ -61,10 +58,12 @@
 #include <iostream>
 #include <fstream>
 
-#include "MachOParser.h"
 #include "FileUtils.h"
 #include "StringUtils.h"
 #include "DyldSharedCache.h"
+#include "MachOFile.h"
+#include "MachOAnalyzer.h"
+#include "ClosureFileSystemPhysical.h"
 
 struct MappedMachOsByCategory
 {
@@ -139,6 +138,7 @@ static const char* sDontUsePrefixes[] = {
     "/bin/zsh",                             // until <rdar://31026756> is fixed
     "/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/Metadata.framework/Versions/A/Support/mdworker", // these load third party plugins
     "/usr/bin/mdimport", // these load third party plugins
+    "/System/Library/Developer/CoreSimulator/",  // ignore Marzipan
 };
 
 
@@ -146,98 +146,70 @@ static bool verbose = false;
 
 
 
-static bool addIfMachO(const std::string& pathPrefix, const std::string& runtimePath, const struct stat& statBuf, bool requireSIP, std::vector<MappedMachOsByCategory>& files)
+static bool addIfMachO(const dyld3::closure::FileSystem& fileSystem, const std::string& runtimePath, const struct stat& statBuf, bool requireSIP,
+                       dev_t rootFS, std::vector<MappedMachOsByCategory>& files)
 {
     // don't precompute closure info for any debug or profile dylibs
     if ( endsWith(runtimePath, "_profile.dylib") || endsWith(runtimePath, "_debug.dylib") || endsWith(runtimePath, "_profile") || endsWith(runtimePath, "_debug") )
         return false;
-
-    // read start of file to determine if it is mach-o or a fat file
-    std::string fullPath = pathPrefix + runtimePath;
-    int fd = ::open(fullPath.c_str(), O_RDONLY);
-    if ( fd < 0 )
+    if ( startsWith(runtimePath, "/usr/lib/system/introspection/") )
         return false;
-    bool result = false;
-    const void* wholeFile = ::mmap(NULL, statBuf.st_size, PROT_READ, MAP_PRIVATE, fd, 0);
-    if ( wholeFile != MAP_FAILED ) {
-        Diagnostics diag;
-        bool usedWholeFile = false;
-        for (MappedMachOsByCategory& file : files) {
-            size_t sliceOffset;
-            size_t sliceLength;
-            bool fatButMissingSlice;
-            const void* slice = MAP_FAILED;
-            if ( dyld3::FatUtil::isFatFileWithSlice(diag, wholeFile, statBuf.st_size, file.archName, sliceOffset, sliceLength, fatButMissingSlice) ) {
-                slice = ::mmap(NULL, sliceLength, PROT_READ, MAP_PRIVATE | MAP_RESILIENT_CODESIGN, fd, sliceOffset);
-                if ( slice != MAP_FAILED ) {
-                    //fprintf(stderr, "mapped slice at %p size=0x%0lX, offset=0x%0lX for %s\n", p, len, offset, fullPath.c_str());
-                    if ( !dyld3::MachOParser::isValidMachO(diag, file.archName, dyld3::Platform::macOS, slice, sliceLength, fullPath.c_str(), false) ) {
-                        ::munmap((void*)slice, sliceLength);
-                        slice = MAP_FAILED;
-                    }
-                }
-            }
-            else if ( !fatButMissingSlice && dyld3::MachOParser::isValidMachO(diag, file.archName, dyld3::Platform::macOS, wholeFile, statBuf.st_size, fullPath.c_str(), false) ) {
-                slice           = wholeFile;
-                sliceLength     = statBuf.st_size;
-                sliceOffset     = 0;
-                usedWholeFile   = true;
-                //fprintf(stderr, "mapped whole file at %p size=0x%0lX for %s\n", p, len, inputPath.c_str());
-            }
-            std::vector<std::string> nonArchWarnings;
-            for (const std::string& warning : diag.warnings()) {
-                if ( !contains(warning, "required architecture") && !contains(warning, "not a dylib") )
-                    nonArchWarnings.push_back(warning);
-            }
-            diag.clearWarnings();
-            if ( !nonArchWarnings.empty() ) {
-                fprintf(stderr, "update_dyld_shared_cache: warning: %s for %s: ", file.archName.c_str(), runtimePath.c_str());
-                for (const std::string& warning : nonArchWarnings) {
-                    fprintf(stderr, "%s ", warning.c_str());
-                }
-                fprintf(stderr, "\n");
-            }
-            if ( slice != MAP_FAILED ) {
-                const mach_header* mh = (mach_header*)slice;
-                dyld3::MachOParser parser((mach_header*)slice);
-                bool sipProtected = isProtectedBySIP(fd);
-                bool issetuid = false;
-                if ( parser.isDynamicExecutable() ) {
-                    // When SIP enabled, only build closures for SIP protected programs
-                    if ( !requireSIP || sipProtected ) {
-                        //fprintf(stderr, "requireSIP=%d, sipProtected=%d, path=%s\n", requireSIP, sipProtected, fullPath.c_str());
-                        issetuid = (statBuf.st_mode & (S_ISUID|S_ISGID));
-                        file.mainExecutables.emplace_back(runtimePath, mh, sliceLength, issetuid, sipProtected, sliceOffset, statBuf.st_mtime, statBuf.st_ino);
-                    }
-                }
-                else if ( parser.canBePlacedInDyldCache(runtimePath) ) {
-                    // when SIP is enabled, only dylib protected by SIP can go in cache
-                    if ( !requireSIP || sipProtected )
-                        file.dylibsForCache.emplace_back(runtimePath, mh, sliceLength, issetuid, sipProtected, sliceOffset, statBuf.st_mtime, statBuf.st_ino);
-                    else
-                        file.otherDylibsAndBundles.emplace_back(runtimePath, mh, sliceLength, issetuid, sipProtected, sliceOffset, statBuf.st_mtime, statBuf.st_ino);
-                }
-                else {
-                    if ( parser.fileType() == MH_DYLIB ) {
-                        std::string installName = parser.installName();
-                        if ( startsWith(installName, "@") && !contains(runtimePath, ".app/") ) {
-                            if (  startsWith(runtimePath, "/usr/lib/") || startsWith(runtimePath, "/System/Library/") )
-                                fprintf(stderr, "update_dyld_shared_cache: warning @rpath install name for system framework: %s\n", runtimePath.c_str());
-                        }
-                    }
-                    file.otherDylibsAndBundles.emplace_back(runtimePath, mh, sliceLength, issetuid, sipProtected, sliceOffset, statBuf.st_mtime, statBuf.st_ino);
-                }
-                result = true;
-            }
-        }
-        if ( !usedWholeFile )
-            ::munmap((void*)wholeFile, statBuf.st_size);
+
+    // Only use files on the same volume as the boot volume
+    if (statBuf.st_dev != rootFS) {
+        if ( verbose )
+            fprintf(stderr, "update_dyld_shared_cache: warning: skipping overlay file '%s' which is not on the root volume\n", runtimePath.c_str());
+        return false;
     }
-    ::close(fd);
+
+    auto warningHandler = ^(const char* msg) {
+        if ( verbose )
+            fprintf(stderr, "update_dyld_shared_cache: warning: cannot build dlopen closure for '%s' because %s\n", runtimePath.c_str(), msg);
+    };
+
+    bool result = false;
+    for (MappedMachOsByCategory& file : files) {
+        Diagnostics diag;
+        dyld3::closure::LoadedFileInfo loadedFileInfo = dyld3::MachOAnalyzer::load(diag, fileSystem, runtimePath.c_str(), file.archName.c_str(), dyld3::Platform::macOS);
+        const dyld3::MachOAnalyzer* ma = (const dyld3::MachOAnalyzer*)loadedFileInfo.fileContent;
+        if ( ma != nullptr ) {
+            bool sipProtected = false; // isProtectedBySIP(fd);
+            bool issetuid     = false;
+            if ( ma->isDynamicExecutable() ) {
+                // When SIP enabled, only build closures for SIP protected programs
+                if ( !requireSIP || sipProtected ) {
+                    //fprintf(stderr, "requireSIP=%d, sipProtected=%d, path=%s\n", requireSIP, sipProtected, fullPath.c_str());
+                    issetuid = (statBuf.st_mode & (S_ISUID|S_ISGID));
+                    file.mainExecutables.emplace_back(runtimePath, ma, loadedFileInfo.sliceLen, issetuid, sipProtected, loadedFileInfo.sliceOffset, statBuf.st_mtime, statBuf.st_ino);
+                }
+            }
+            else if ( ma->canBePlacedInDyldCache(runtimePath.c_str(), ^(const char* msg) {}) ) {
+                // when SIP is enabled, only dylib protected by SIP can go in cache
+                if ( !requireSIP || sipProtected )
+                    file.dylibsForCache.emplace_back(runtimePath, ma, loadedFileInfo.sliceLen, issetuid, sipProtected, loadedFileInfo.sliceOffset, statBuf.st_mtime, statBuf.st_ino);
+                else if ( ma->canHavePrecomputedDlopenClosure(runtimePath.c_str(), warningHandler) )
+                    file.otherDylibsAndBundles.emplace_back(runtimePath, ma, loadedFileInfo.sliceLen, issetuid, sipProtected, loadedFileInfo.sliceOffset, statBuf.st_mtime, statBuf.st_ino);
+            }
+            else {
+                if ( ma->isDylib() ) {
+                    std::string installName = ma->installName();
+                    if ( startsWith(installName, "@") && !contains(runtimePath, ".app/") && !contains(runtimePath, ".xpc/") ) {
+                        if ( startsWith(runtimePath, "/usr/lib/") || startsWith(runtimePath, "/System/Library/") )
+                            fprintf(stderr, "update_dyld_shared_cache: warning @rpath install name for system framework: %s\n", runtimePath.c_str());
+                    }
+                }
+                else if ( ma->canHavePrecomputedDlopenClosure(runtimePath.c_str(), warningHandler) ) {
+                    file.otherDylibsAndBundles.emplace_back(runtimePath, ma, loadedFileInfo.sliceLen, issetuid, sipProtected, loadedFileInfo.sliceOffset, statBuf.st_mtime, statBuf.st_ino);
+                }
+            }
+            result = true;
+        }
+    }
+
     return result;
 }
 
-static void findAllFiles(const std::vector<std::string>& pathPrefixes, bool requireSIP, std::vector<MappedMachOsByCategory>& files)
+static void findAllFiles(const std::vector<std::string>& pathPrefixes, bool requireSIP, dev_t rootFS, std::vector<MappedMachOsByCategory>& files)
 {
     std::unordered_set<std::string> skipDirs;
     for (const char* s : sDontUsePrefixes)
@@ -247,6 +219,7 @@ static void findAllFiles(const std::vector<std::string>& pathPrefixes, bool requ
     bool multiplePrefixes = (pathPrefixes.size() > 1);
     for (const std::string& prefix : pathPrefixes) {
         // get all files from overlay for this search dir
+        dyld3::closure::FileSystemPhysical fileSystem(prefix.c_str());
         for (const char* searchDir : sAllowedPrefixes ) {
             iterateDirectoryTree(prefix, searchDir, ^(const std::string& dirPath) { return (skipDirs.count(dirPath) != 0); }, ^(const std::string& path, const struct stat& statBuf) {
                 // ignore files that don't have 'x' bit set (all runnable mach-o files do)
@@ -263,7 +236,7 @@ static void findAllFiles(const std::vector<std::string>& pathPrefixes, bool requ
                     return;
 
                 // if the file is mach-o, add to list
-                if ( addIfMachO(prefix, path, statBuf, requireSIP, files) ) {
+                if ( addIfMachO(fileSystem, path, statBuf, requireSIP, rootFS, files) ) {
                     if ( multiplePrefixes )
                         alreadyUsed.insert(path);
                 }
@@ -273,7 +246,7 @@ static void findAllFiles(const std::vector<std::string>& pathPrefixes, bool requ
 }
 
 
-static void findOSFilesViaBOMS(const std::vector<std::string>& pathPrefixes, bool requireSIP, std::vector<MappedMachOsByCategory>& files)
+static void findOSFilesViaBOMS(const std::vector<std::string>& pathPrefixes, bool requireSIP, dev_t rootFS, std::vector<MappedMachOsByCategory>& files)
 {
     __block std::unordered_set<std::string> runtimePathsFound;
     for (const std::string& prefix : pathPrefixes) {
@@ -325,9 +298,11 @@ static void findOSFilesViaBOMS(const std::vector<std::string>& pathPrefixes, boo
                                     struct stat statBuf2;
                                     std::string fullPath2 = prefix2 + runPath;
                                     if ( stat(fullPath2.c_str(), &statBuf2) == 0 ) {
-                                        addIfMachO(prefix2, runPath, statBuf2, requireSIP, files);
-                                        runtimePathsFound.insert(runPath);
-                                        break;
+                                        dyld3::closure::FileSystemPhysical fileSystem(prefix2.c_str());
+                                        if ( addIfMachO(fileSystem, runPath, statBuf2, requireSIP, rootFS, files) ) {
+                                            runtimePathsFound.insert(runPath);
+                                            break;
+                                        }
                                     }
                                 }
                             }
@@ -382,10 +357,12 @@ static bool dontCache(const std::string& volumePrefix, const std::string& archNa
         return true;
     }
 
-    dyld3::MachOParser parser(aFile.mh);
-    const char* installName = parser.installName();
+    const char* installName = aFile.mh->installName();
     if ( (pathsWithDuplicateInstallName.count(aFile.runtimePath) != 0) && (aFile.runtimePath != installName) ) {
-        if (warn) fprintf(stderr, "update_dyld_shared_cache: warning: %s skipping because of duplicate install name %s\n", archName.c_str(), aFile.runtimePath.c_str());
+        // <rdar://problem/46431467> if a dylib moves and a symlink is installed into its place, bom iterator will see both and issue a warning
+        struct stat statBuf;
+        bool isSymLink = ( (lstat(aFile.runtimePath.c_str(), &statBuf) == 0) && S_ISLNK(statBuf.st_mode) );
+        if (!isSymLink && warn) fprintf(stderr, "update_dyld_shared_cache: warning: %s skipping because of duplicate install name %s\n", archName.c_str(), aFile.runtimePath.c_str());
         return true;
     }
 
@@ -402,6 +379,17 @@ static bool dontCache(const std::string& volumePrefix, const std::string& archNa
                 return false;
             }
         }
+        // <rdar://problem/38000411> also if runtime path is a symlink to install name
+        std::string fullRuntime = volumePrefix + aFile.runtimePath;
+        if ( realpath(fullRuntime.c_str(), resolvedPath) != NULL ) {
+            std::string resolvedSymlink = resolvedPath;
+            if ( !volumePrefix.empty() ) {
+                resolvedSymlink = resolvedSymlink.substr(volumePrefix.size());
+            }
+            if ( resolvedSymlink == installName ) {
+                return false;
+            }
+        }
         if (warn) fprintf(stderr, "update_dyld_shared_cache: warning: %s skipping because of bad install name %s\n", archName.c_str(), aFile.runtimePath.c_str());
         return true;
     }
@@ -414,8 +402,7 @@ static void pruneCachedDylibs(const std::string& volumePrefix, const std::unorde
 
     std::unordered_map<std::string, std::string> installNameToFirstPath;
     for (DyldSharedCache::MappedMachO& aFile : fileSet.dylibsForCache) {
-        dyld3::MachOParser parser(aFile.mh);
-        const char* installName = parser.installName();
+        const char* installName = aFile.mh->installName();
         auto pos = installNameToFirstPath.find(installName);
         if ( pos == installNameToFirstPath.end() ) {
             installNameToFirstPath[installName] = aFile.runtimePath;
@@ -427,8 +414,11 @@ static void pruneCachedDylibs(const std::string& volumePrefix, const std::unorde
     }
 
     for (DyldSharedCache::MappedMachO& aFile : fileSet.dylibsForCache) {
-        if ( dontCache(volumePrefix, fileSet.archName, pathsWithDuplicateInstallName, aFile, true, skipDylibs) )
-            fileSet.otherDylibsAndBundles.push_back(aFile);
+        if ( dontCache(volumePrefix, fileSet.archName, pathsWithDuplicateInstallName, aFile, true, skipDylibs) ) {
+            // <rdar://problem/46423929> don't build dlopen closures for symlinks to something in the dyld cache
+            if ( pathsWithDuplicateInstallName.count(aFile.runtimePath) == 0 )
+                fileSet.otherDylibsAndBundles.push_back(aFile);
+        }
     }
     fileSet.dylibsForCache.erase(std::remove_if(fileSet.dylibsForCache.begin(), fileSet.dylibsForCache.end(),
         [&](const DyldSharedCache::MappedMachO& aFile) { return dontCache(volumePrefix, fileSet.archName, pathsWithDuplicateInstallName, aFile, false, skipDylibs); }),
@@ -439,11 +429,9 @@ static void pruneOtherDylibs(const std::string& volumePrefix, MappedMachOsByCate
 {
     // other OS dylibs should not contain dylibs that are embedded in some .app bundle
     fileSet.otherDylibsAndBundles.erase(std::remove_if(fileSet.otherDylibsAndBundles.begin(), fileSet.otherDylibsAndBundles.end(),
-        [&](const DyldSharedCache::MappedMachO& aFile) { return (aFile.runtimePath.find(".app/") != std::string::npos); }),
-        fileSet.otherDylibsAndBundles.end());
+                                                       [&](const DyldSharedCache::MappedMachO& aFile) { return (aFile.runtimePath.find(".app/") != std::string::npos); }),
+                                        fileSet.otherDylibsAndBundles.end());
 }
-
-
 static void pruneExecutables(const std::string& volumePrefix, MappedMachOsByCategory& fileSet)
 {
     // don't build closures for xcode shims in /usr/bin (e.g. /usr/bin/clang) which re-exec themselves to a tool inside Xcode.app
@@ -451,9 +439,8 @@ static void pruneExecutables(const std::string& volumePrefix, MappedMachOsByCate
         [&](const DyldSharedCache::MappedMachO& aFile) {
             if ( !startsWith(aFile.runtimePath, "/usr/bin/") )
                 return false;
-            dyld3::MachOParser parser(aFile.mh);
             __block bool isXcodeShim = false;
-            parser.forEachDependentDylib(^(const char* loadPath, bool, bool, bool, uint32_t, uint32_t, bool &stop) {
+            aFile.mh->forEachDependentDylib(^(const char* loadPath, bool, bool, bool, uint32_t, uint32_t, bool &stop) {
                 if ( strcmp(loadPath, "/usr/lib/libxcselect.dylib") == 0 )
                     isXcodeShim = true;
             });
@@ -542,7 +529,7 @@ static bool runningOnHaswell()
         }                               \
     } while ( 0 )
 
-int main(int argc, const char* argv[])
+int main(int argc, const char* argv[], const char* envp[])
 {
     std::string                     rootPath;
     std::string                     overlayPath;
@@ -635,6 +622,40 @@ int main(int argc, const char* argv[])
             overlayPath = resolvedPath;
         }
     }
+
+    // <rdar://problem/36362221> update_dyld_shared_cache should re-exec() itself to a newer version
+    std::string newTool;
+    if ( !rootPath.empty() )
+        newTool = rootPath + "/usr/bin/update_dyld_shared_cache";
+    else if ( !overlayPath.empty() )
+        newTool = overlayPath + "/usr/bin/update_dyld_shared_cache";
+    if ( !newTool.empty() ) {
+        struct stat newToolStatBuf;
+        if ( stat(newTool.c_str(), &newToolStatBuf) == 0 ) {
+            char curToolPath[PATH_MAX];
+            uint32_t curToolPathsize = PATH_MAX;
+            int result = _NSGetExecutablePath(curToolPath, &curToolPathsize);
+            if ( result == 0 ) {
+                char resolvedCurToolPath[PATH_MAX];
+                if ( realpath(curToolPath, resolvedCurToolPath) != NULL ) {
+                    // don't re-exec if we are already running that tool
+                    if ( newTool != resolvedCurToolPath ) {
+                        execve(newTool.c_str(), (char**)argv, (char**)envp);
+                    }
+                }
+            }
+        }
+    }
+
+    // Find the boot volume so that we can ensure all overlays are on the same volume
+    struct stat rootStatBuf;
+    if ( stat(rootPath == "" ? "/" : rootPath.c_str(), &rootStatBuf) != 0 ) {
+        fprintf(stderr, "update_dyld_shared_cache: error: could not stat root file system because '%s'\n", strerror(errno));
+        return 1;
+    }
+
+    dev_t rootFS = rootStatBuf.st_dev;
+
     //
     // pathPrefixes for three modes:
     //   1) no options: { "" }           // search only boot volume
@@ -642,12 +663,28 @@ int main(int argc, const char* argv[])
     //   3) -root:      { root }         // search only -root volume
     //
     std::vector<std::string> pathPrefixes;
-    if ( !overlayPath.empty() )
-        pathPrefixes.push_back(overlayPath);
+    if ( !overlayPath.empty() ) {
+        // Only add the overlay path if it exists, and is the same volume as the root
+        struct stat overlayStatBuf;
+        if ( stat(overlayPath.c_str(), &overlayStatBuf) != 0 ) {
+            fprintf(stderr, "update_dyld_shared_cache: warning: ignoring overlay dir '%s' because '%s'\n", overlayPath.c_str(), strerror(errno));
+            overlayPath.clear();
+        } else if (overlayStatBuf.st_dev != rootFS) {
+            fprintf(stderr, "update_dyld_shared_cache: warning: ignoring overlay dir '%s' because it is not the boot volume\n", overlayPath.c_str());
+            overlayPath.clear();
+        } else {
+            pathPrefixes.push_back(overlayPath);
+        }
+    }
     pathPrefixes.push_back(rootPath);
 
-
     if ( cacheDir.empty() ) {
+        // if -cache_dir is not specified, then write() will eventually fail if we are not running as root
+        if ( geteuid() != 0 ) {
+            fprintf(stderr, "update_dyld_shared_cache: must be run as root (sudo)\n");
+            return 1;
+        }
+
         // write cache file into -root or -overlay directory, if used
         if ( rootPath != "/" )
             cacheDir = rootPath +  MACOSX_DYLD_SHARED_CACHE_DIR;
@@ -655,11 +692,11 @@ int main(int argc, const char* argv[])
             cacheDir = overlayPath +  MACOSX_DYLD_SHARED_CACHE_DIR;
         else
             cacheDir = MACOSX_DYLD_SHARED_CACHE_DIR;
-    }
+   }
 
     int err = mkpath_np(cacheDir.c_str(), S_IRWXU | S_IRGRP|S_IXGRP | S_IROTH|S_IXOTH);
     if ( (err != 0) && (err != EEXIST) ) {
-        fprintf(stderr, "mkpath_np fail: %d", err);
+        fprintf(stderr, "update_dyld_shared_cache: could not access cache dir: mkpath_np(%s) failed errno=%d\n", cacheDir.c_str(), err);
         return 1;
     }
 
@@ -689,10 +726,10 @@ int main(int argc, const char* argv[])
     if ( archStrs.count("i386") )
         allFileSets.push_back({"i386"});
     if ( searchDisk )
-        findAllFiles(pathPrefixes, requireDylibsBeRootlessProtected, allFileSets);
+        findAllFiles(pathPrefixes, requireDylibsBeRootlessProtected, rootFS, allFileSets);
     else {
         std::unordered_set<std::string> runtimePathsFound;
-        findOSFilesViaBOMS(pathPrefixes, requireDylibsBeRootlessProtected, allFileSets);
+        findOSFilesViaBOMS(pathPrefixes, requireDylibsBeRootlessProtected, rootFS, allFileSets);
     }
 
     // nothing in OS uses i386 dylibs, so only dylibs used by third party apps need to be in cache
@@ -735,11 +772,33 @@ int main(int argc, const char* argv[])
                 std::string fullPath = prefix + runtimePath;
                 struct stat statBuf;
                 if ( stat(fullPath.c_str(), &statBuf) == 0 ) {
+                    dyld3::closure::FileSystemPhysical fileSystem(prefix.c_str());
+                    char resolvedPath[PATH_MAX];
+                    if ( realpath(fullPath.c_str(), resolvedPath) != NULL ) {
+                        std::string resolvedSymlink = resolvedPath;
+                        if ( !rootPath.empty() ) {
+                            resolvedSymlink = resolvedSymlink.substr(rootPath.size());
+                        }
+                        if ( (runtimePath != resolvedSymlink) && !contains(runtimePath, "InputContext") ) {  //HACK remove InputContext when fixed
+                           // path requested is a symlink path, check if real path already loaded
+                            for (const DyldSharedCache::MappedMachO& aDylibMapping : fileSet.dylibsForCache) {
+                                if ( aDylibMapping.runtimePath == resolvedSymlink ) {
+                                    if ( verbose )
+                                        fprintf(stderr, "verifySelfContained, redirect %s to %s\n", runtimePath.c_str(), aDylibMapping.runtimePath.c_str());
+                                    return aDylibMapping;
+                                }
+                            }
+                        }
+                    }
+
                     std::vector<MappedMachOsByCategory> mappedFiles;
                     mappedFiles.push_back({fileSet.archName});
-                    if ( addIfMachO(prefix, runtimePath, statBuf, requireDylibsBeRootlessProtected, mappedFiles) ) {
-                        if ( !mappedFiles.back().dylibsForCache.empty() )
+                   if ( addIfMachO(fileSystem, runtimePath, statBuf, requireDylibsBeRootlessProtected, rootFS, mappedFiles) ) {
+                        if ( !mappedFiles.back().dylibsForCache.empty() ) {
+                            if ( verbose )
+                                fprintf(stderr, "verifySelfContained, add %s\n", mappedFiles.back().dylibsForCache.back().runtimePath.c_str());
                             return mappedFiles.back().dylibsForCache.back();
+                        }
                     }
                 }
             }
@@ -771,14 +830,17 @@ int main(int argc, const char* argv[])
         }
 
          // add any extra dylibs needed which were not in .bom
-        fprintf(stderr, "update_dyld_shared_cache: %s incorporating %lu OS dylibs, tracking %lu others, building closures for %lu executables\n", fileSet.archName.c_str(), fileSet.dylibsForCache.size(), fileSet.otherDylibsAndBundles.size(), fileSet.mainExecutables.size());
-        //for (const DyldSharedCache::MappedMachO& aFile : fileSet.dylibsForCache) {
+        fprintf(stderr, "update_dyld_shared_cache: %s incorporating %lu OS dylibs, tracking %lu others, building closures for %lu executables\n",
+                        fileSet.archName.c_str(), fileSet.dylibsForCache.size(), fileSet.otherDylibsAndBundles.size(), fileSet.mainExecutables.size());
+        //for (const DyldSharedCache::MappedMachO& aFile : fileSet.otherDylibsAndBundles) {
         //    fprintf(stderr, "  %s\n", aFile.runtimePath.c_str());
         //}
 
 
         // build cache new cache file
         DyldSharedCache::CreateOptions options;
+        options.outputFilePath               = outFile;
+        options.outputMapFilePath            = cacheDir + "/dyld_shared_cache_" + fileSet.archName + ".map";
         options.archName                     = fileSet.archName;
         options.platform                     = dyld3::Platform::macOS;
         options.excludeLocalSymbols          = false;
@@ -789,6 +851,7 @@ int main(int argc, const char* argv[])
         options.inodesAreSameAsRuntime       = true;
         options.cacheSupportsASLR            = (fileSet.archName != "i386");
         options.forSimulator                 = false;
+        options.isLocallyBuiltCache          = true;
         options.verbose                      = verbose;
         options.evictLeafDylibsOnOverflow    = true;
         options.pathPrefixes                 = pathPrefixes;
@@ -798,24 +861,12 @@ int main(int argc, const char* argv[])
         for (const std::string& warn : results.warnings) {
             fprintf(stderr, "update_dyld_shared_cache: warning: %s %s\n", fileSet.archName.c_str(), warn.c_str());
         }
-        if ( !results.errorMessage.empty() ) {
-            // print error (if one)
-            fprintf(stderr, "update_dyld_shared_cache: %s\n", results.errorMessage.c_str());
-            cacheBuildFailure = true;
+        if ( results.errorMessage.empty() ) {
+            wroteSomeCacheFile = true;
         }
         else {
-            // save new cache file to disk and write new .map file
-            assert(results.cacheContent != nullptr);
-            if ( !safeSave(results.cacheContent, results.cacheLength, outFile) )
-                cacheBuildFailure = true;
-            if ( !cacheBuildFailure ) {
-                std::string mapStr = results.cacheContent->mapFile();
-                std::string outFileMap = cacheDir + "/dyld_shared_cache_" + fileSet.archName + ".map";
-                safeSave(mapStr.c_str(), mapStr.size(), outFileMap);
-                wroteSomeCacheFile = true;
-            }
-            // free created cache buffer
-            vm_deallocate(mach_task_self(), (vm_address_t)results.cacheContent, results.cacheLength);
+            fprintf(stderr, "update_dyld_shared_cache: %s\n", results.errorMessage.c_str());
+            cacheBuildFailure = true;
         }
     });
 
