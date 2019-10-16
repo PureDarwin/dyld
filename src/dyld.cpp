@@ -72,9 +72,12 @@
 		AMFI_DYLD_OUTPUT_ALLOW_FAILED_LIBRARY_INSERTION = (1 << 5),
 	};
 	extern "C" int amfi_check_dyld_policy_self(uint64_t input_flags, uint64_t* output_flags);
-#else
+#elif !defined(__PUREDARWIN__)
 	#include <libamfi.h>
 #endif
+#if defined(__PUREDARWIN__)
+#include <CommonCrypto/CommonDigest.h>
+#else
 extern "C" {
 	#include <corecrypto/ccdigest.h>
 	#include <corecrypto/ccsha2.h>
@@ -83,6 +86,7 @@ extern "C" {
 #include <sandbox/private.h>
 #if __has_feature(ptrauth_calls)
 	#include <ptrauth.h>
+#endif
 #endif
 
 extern "C" int __fork();
@@ -1219,9 +1223,11 @@ static bool sandboxBlocked(const char* path, const char* kind)
 #if TARGET_IPHONE_SIMULATOR
 	// sandbox calls not yet supported in simulator runtime
 	return false;
-#else
+#elif !defined(__PUREDARWIN__)
 	sandbox_filter_type filter = (sandbox_filter_type)(SANDBOX_FILTER_PATH | SANDBOX_CHECK_NO_REPORT);
 	return ( sandbox_check(getpid(), kind, filter, path) > 0 );
+#else
+	return false;
 #endif
 }
 
@@ -3726,7 +3732,7 @@ static bool cacheablePath(const char* path) {
 //
 ImageLoader* load(const char* path, const LoadContext& context, unsigned& cacheIndex)
 {
-	CRSetCrashLogMessage2(path);
+	CRSetCrashLogMessage(path);
 	const char* orgPath = path;
 	cacheIndex = UINT32_MAX;
 	
@@ -3742,7 +3748,7 @@ ImageLoader* load(const char* path, const LoadContext& context, unsigned& cacheI
 
 	ImageLoader* image = loadPhase0(path, orgPath, context, cacheIndex, NULL);
 	if ( image != NULL ) {
-		CRSetCrashLogMessage2(NULL);
+		CRSetCrashLogMessage(NULL);
 		return image;
 	}
 
@@ -3754,7 +3760,7 @@ ImageLoader* load(const char* path, const LoadContext& context, unsigned& cacheI
 	if ( image == NULL)
 		image = loadPhase2cache(path, orgPath, context, cacheIndex, &exceptions);
 #endif
-    CRSetCrashLogMessage2(NULL);
+    CRSetCrashLogMessage(NULL);
 	if ( image != NULL ) {
 		// <rdar://problem/6916014> leak in dyld during dlopen when using DYLD_ variables
 		for (std::vector<const char*>::iterator it = exceptions.begin(); it != exceptions.end(); ++it) {
@@ -4868,6 +4874,7 @@ static void loadInsertedDylib(const char* path)
 
 static void configureProcessRestrictions(const macho_header* mainExecutableMH)
 {
+#if !defined(__PUREDARWIN__)
 	uint64_t amfiInputFlags = 0;
 #if TARGET_IPHONE_SIMULATOR
 	amfiInputFlags |= AMFI_DYLD_INPUT_PROC_IN_SIMULATOR;
@@ -4919,6 +4926,7 @@ static void configureProcessRestrictions(const macho_header* mainExecutableMH)
 		halt("amfi_check_dyld_policy_self() failed\n");
 #endif
 	}
+#endif
 }
 
 
@@ -5047,7 +5055,11 @@ static SyscallHelpers sSysCalls = {
 		// Added in version 9
 		&kdebug_trace_string,
 		// Added in version 10
+#if defined(__PUREDARWIN__)
+		nullptr,
+#else
 		&amfi_check_dyld_policy_self,
+#endif
 		// Added in version 11
 		&notifyMonitoringDyldMain,
 		&notifyMonitoringDyld,
@@ -5629,38 +5641,36 @@ static void putHexByte(uint8_t value, char*& p)
 #if __MAC_OS_X_VERSION_MIN_REQUIRED
 static void makeHashOfProgramAndEnv(const char* mainExecutablePath, const uint8_t* mainExecutableCDHash, const char* envp[], uint8_t hash32[32])
 {
-	// create hash of main path, main cd hash, cache UUID, DYLD_* env vars
-	const struct ccdigest_info* di = ccsha256_di();
-	ccdigest_di_decl(di, hashTemp); // defines hashTemp array in stack
-	ccdigest_init(di, hashTemp);
-	// hash in main executable path
-	ccdigest_update(di, hashTemp, strlen(mainExecutablePath), mainExecutablePath);
-	// hash in cdHash of main executable
-	if ( mainExecutableCDHash != nullptr )
-		ccdigest_update(di, hashTemp, 20, mainExecutableCDHash);
+	CC_SHA256_CTX sha;
+	CC_SHA256_Init(&sha);
+
+	// hash in main executable path and CDHash
+	CC_SHA256_Update(&sha, mainExecutablePath, (CC_LONG)strlen(mainExecutablePath));
+	if (mainExecutableCDHash != nullptr)
+		CC_SHA256_Update(&sha, mainExecutableCDHash, 20);
+
 	// hash in shared cache UUID
-	if ( sSharedCacheLoadInfo.loadAddress != nullptr ) {
+	if (sSharedCacheLoadInfo.loadAddress != nullptr) {
 		uuid_t cacheUUID;
 		sSharedCacheLoadInfo.loadAddress->getUUID(cacheUUID);
-		ccdigest_update(di, hashTemp, sizeof(uuid_t), cacheUUID);
+		CC_SHA256_Update(&sha, cacheUUID, sizeof(cacheUUID));
 	}
-#if __MAC_OS_X_VERSION_MIN_REQUIRED
+
 	// hash in if process is restricted
-	ccdigest_update(di, hashTemp, sizeof(gLinkContext.allowEnvVarsPath), &gLinkContext.allowEnvVarsPath);
-#endif
+	CC_SHA256_Update(&sha, &gLinkContext.allowEnvVarsPath, sizeof(gLinkContext.allowEnvVarsPath));
+
 	// include dyld's UUID so changing dyld invalidates closures
 	uuid_t dyldUUID;
-	if ( ((const dyld3::MachOLoaded*)&__dso_handle)->getUuid(dyldUUID) )
-		ccdigest_update(di, hashTemp, sizeof(uuid_t), dyldUUID);
+	if (((const dyld3::MachOLoaded*)&__dso_handle)->getUuid(dyldUUID))
+		CC_SHA256_Update(&sha, dyldUUID, sizeof(dyldUUID));
 
 	// hash in DYLD_* env vars
-	for (const char* envVar : sEnvVarsToCheck) {
-		if ( const char* keyValue = _simple_getenv(envp, envVar) )
-			ccdigest_update(di, hashTemp, strlen(keyValue), keyValue);
+	for (const char *envVar : sEnvVarsToCheck) {
+		if (const char *keyValue = _simple_getenv(envp, envVar))
+			CC_SHA256_Update(&sha, keyValue, (CC_LONG)strlen(keyValue));
 	}
-	// finish SHA256 into 32-byte value
-	ccdigest_final(di, hashTemp, hash32);
-	ccdigest_di_clear(di, hashTemp);
+
+	CC_SHA256_Final(hash32, &sha);
 }
 #endif
 
