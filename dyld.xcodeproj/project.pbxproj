@@ -1388,13 +1388,14 @@
 			};
 			buildConfigurationList = F9D8C7E9087B087300E93EFB /* Build configuration list for PBXProject "dyld" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 1;
 			knownRegions = (
-				English,
-				Japanese,
-				French,
-				German,
+				de,
+				en,
+				Base,
+				ja,
+				fr,
 			);
 			mainGroup = F9ED4C870630A72200DF4E74;
 			productRefGroup = F9ED4C990630A76000DF4E74 /* Products */;
