@@ -42,7 +42,9 @@
 #include <bootstrap.h>
 #include <CommonCrypto/CommonDigest.h>
 #include <sandbox.h>
+#if !defined(__PUREDARWIN__)
 #include <sandbox/private.h>
+#endif
 #include <dispatch/dispatch.h>
 #include <mach/vm_page_size.h>
 
@@ -315,9 +317,11 @@ bool Loader::sandboxBlocked(const char* path, const char* kind)
 #if TARGET_IPHONE_SIMULATOR
     // sandbox calls not yet supported in dyld_sim
     return false;
-#else
+#elif !defined(__PUREDARWIN__)
     sandbox_filter_type filter = (sandbox_filter_type)(SANDBOX_FILTER_PATH | SANDBOX_CHECK_NO_REPORT);
     return ( sandbox_check(getpid(), kind, filter, path) > 0 );
+#else
+    return false;
 #endif
 }
 

@@ -25,8 +25,12 @@
 
 #include <fcntl.h>
 #include <stdlib.h>
+#include <string.h>
+#include <mach/vm_param.h>
 #include <sandbox.h>
+#if !defined(__PUREDARWIN__)
 #include <sandbox/private.h>
+#endif
 #include <unistd.h>
 #include <sys/errno.h>
 #include <sys/mman.h>
@@ -54,9 +58,11 @@ static bool sandboxBlocked(const char* path, const char* kind)
 #if TARGET_IPHONE_SIMULATOR
     // sandbox calls not yet supported in dyld_sim
     return false;
-#else
+#elif !defined(__PUREDARWIN__)
     sandbox_filter_type filter = (sandbox_filter_type)(SANDBOX_FILTER_PATH | SANDBOX_CHECK_NO_REPORT);
     return ( sandbox_check(getpid(), kind, filter, path) > 0 );
+#else
+    return false;
 #endif
 }
 

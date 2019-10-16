@@ -38,7 +38,9 @@
 #include <dispatch/dispatch.h>
 #include <mach-o/dyld.h>
 #include <System/sys/csr.h>
+#if !defined(__PUREDARWIN__)
 #include <rootless.h>
+#endif
 
 #include <string>
 #include <fstream>
@@ -152,7 +154,11 @@ bool isProtectedBySIP(const std::string& path)
     if ( !sipIsEnabled() )
         return false;
 
+#if !defined(__PUREDARWIN__)
     return (rootless_check_trusted(path.c_str()) == 0);
+#else
+    return false;
+#endif
 }
 
 bool isProtectedBySIP(int fd)
@@ -160,6 +166,7 @@ bool isProtectedBySIP(int fd)
     if ( !sipIsEnabled() )
         return false;
 
+#if !defined(__PUREDARWIN__)
 #if __MAC_OS_X_VERSION_MIN_REQUIRED >= 101200
     return (rootless_check_trusted_fd(fd) == 0);
 #else
@@ -167,6 +174,9 @@ bool isProtectedBySIP(int fd)
     char realPath[MAXPATHLEN];
     if ( fcntl(fd, F_GETPATH, realPath) == 0 )
         return (rootless_check_trusted(realPath) == 0);
+    return false;
+#endif
+#else
     return false;
 #endif
 }

@@ -21,7 +21,7 @@
  * @APPLE_LICENSE_HEADER_END@
  */
 
-
+#if !defined(__PUREDARWIN__)
 #include <set>
 #include <array>
 #include <string>
@@ -289,3 +289,4 @@ bool build(Diagnostics& diags, dyld3::Manifest& manifest, const std::string& mas
     
     return !cacheBuildFailure;
 }
+#endif
