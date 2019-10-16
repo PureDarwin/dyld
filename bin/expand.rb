@@ -2,7 +2,7 @@
 
 require 'yaml'
 
-$availCmd = ENV["SDKROOT"] + "/usr/local/libexec/availability.pl";
+$availCmd = ENV["DEPROOT"] + "/usr/local/libexec/availability.pl";
 
 def versionString(vers)
     uvers = ""
