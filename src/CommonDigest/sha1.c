@@ -74,6 +74,8 @@
 extern int _CC_SHA1_Update(CC_SHA1_CTX *c, const void *data, CC_LONG len);
 #endif
 
+#include "sha_locl.h"
+
 #ifdef	_APPLE_COMMON_CRYPTO_
 
 #if CC_SHA1_USE_HARDWARE

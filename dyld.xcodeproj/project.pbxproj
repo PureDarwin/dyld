@@ -561,6 +561,9 @@
 		1F11EB4C23579BC700549C19 /* sha2.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = sha2.c; sourceTree = "<group>"; };
 		1F11EB4D23579BC700549C19 /* sha2Priv.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sha2Priv.h; sourceTree = "<group>"; };
 		1F11EB4F2357A20A00549C19 /* sha1.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = sha1.c; sourceTree = "<group>"; };
+		1F11EB512357A2F900549C19 /* sha_locl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sha_locl.h; sourceTree = "<group>"; };
+		1F11EB522357A36800549C19 /* md32_common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = md32_common.h; sourceTree = "<group>"; };
+		1F11EB532357A3DB00549C19 /* CommonDigestPriv.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommonDigestPriv.h; sourceTree = "<group>"; };
 		3703A1241B38C1B300ADBA7F /* dyld_shared_cache_builder */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = dyld_shared_cache_builder; sourceTree = BUILT_PRODUCTS_DIR; };
 		376ED1D71C46F2710051DD54 /* Metabom.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metabom.framework; path = AppleInternal/Library/Frameworks/Metabom.framework; sourceTree = SDKROOT; };
 		377686021AC4B27D00026E6C /* multi_dyld_shared_cache_builder */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = multi_dyld_shared_cache_builder; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -821,6 +824,9 @@
 		1F11EB4B23579BC700549C19 /* CommonDigest */ = {
 			isa = PBXGroup;
 			children = (
+				1F11EB532357A3DB00549C19 /* CommonDigestPriv.h */,
+				1F11EB522357A36800549C19 /* md32_common.h */,
+				1F11EB512357A2F900549C19 /* sha_locl.h */,
 				1F11EB4F2357A20A00549C19 /* sha1.c */,
 				1F11EB4C23579BC700549C19 /* sha2.c */,
 				1F11EB4D23579BC700549C19 /* sha2Priv.h */,
