@@ -66,6 +66,7 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		1F11EB4E23579BC700549C19 /* sha2.c in Sources */ = {isa = PBXBuildFile; fileRef = 1F11EB4C23579BC700549C19 /* sha2.c */; };
 		37554F3B1E3F0FD200407388 /* Manifest.mm in Sources */ = {isa = PBXBuildFile; fileRef = 37908A281E3A853E009613FA /* Manifest.mm */; };
 		37554F3C1E3F0FD200407388 /* DyldSharedCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F98692141DC3EF6C00CBEDE6 /* DyldSharedCache.cpp */; };
 		37554F3D1E3F0FD200407388 /* FileUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F986920D1DC3EF6C00CBEDE6 /* FileUtils.cpp */; };
@@ -556,6 +557,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		1F11EB4C23579BC700549C19 /* sha2.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = sha2.c; sourceTree = "<group>"; };
+		1F11EB4D23579BC700549C19 /* sha2Priv.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sha2Priv.h; sourceTree = "<group>"; };
 		3703A1241B38C1B300ADBA7F /* dyld_shared_cache_builder */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = dyld_shared_cache_builder; sourceTree = BUILT_PRODUCTS_DIR; };
 		376ED1D71C46F2710051DD54 /* Metabom.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metabom.framework; path = AppleInternal/Library/Frameworks/Metabom.framework; sourceTree = SDKROOT; };
 		377686021AC4B27D00026E6C /* multi_dyld_shared_cache_builder */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = multi_dyld_shared_cache_builder; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -813,6 +816,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1F11EB4B23579BC700549C19 /* CommonDigest */ = {
+			isa = PBXGroup;
+			children = (
+				1F11EB4C23579BC700549C19 /* sha2.c */,
+				1F11EB4D23579BC700549C19 /* sha2Priv.h */,
+			);
+			name = CommonDigest;
+			path = src/CommonDigest;
+			sourceTree = "<group>";
+		};
 		37918ABF2058908000F39A77 /* tracing */ = {
 			isa = PBXGroup;
 			children = (
@@ -1027,6 +1040,7 @@
 		F9ED4CBB0630A7AA00DF4E74 /* src */ = {
 			isa = PBXGroup;
 			children = (
+				1F11EB4B23579BC700549C19 /* CommonDigest */,
 				F93F46511FA420630060D9F9 /* execserver.defs */,
 				F97FF35F1C236402000ACDD2 /* nocr.c */,
 				37F597D42061ECFF00F9B6F9 /* dyld_usage.cpp */,
@@ -1885,6 +1899,7 @@
 				F9ED4CDB0630A7F100DF4E74 /* dyldInitialization.cpp in Sources */,
 				F9ED4CD70630A7F100DF4E74 /* dyld.cpp in Sources */,
 				C1D2683A1FE0BCF3009F115B /* ClosureFileSystemPhysical.cpp in Sources */,
+				1F11EB4E23579BC700549C19 /* sha2.c in Sources */,
 				F9ED4CD90630A7F100DF4E74 /* dyldAPIs.cpp in Sources */,
 				F9ED4CDA0630A7F100DF4E74 /* dyldExceptions.c in Sources */,
 				F9ED4CD60630A7F100DF4E74 /* dyld_gdb.cpp in Sources */,
