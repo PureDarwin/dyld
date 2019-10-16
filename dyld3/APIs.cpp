@@ -294,10 +294,12 @@ uint32_t dyld_get_sdk_version(const mach_header* mh)
                 case PLATFORM_WATCHOS:  retval = sdk_version + 0x00070000; return;
                 default: retval = sdk_version; return;
             }
+#if !defined(__PUREDARWIN__)
         } else if (platform == PLATFORM_IOSSIMULATOR && ::dyld_get_active_platform() == PLATFORM_IOSMAC) {
             //FIXME bringup hack
             versionFound = true;
             retval = 0x000C0000;
+#endif
         }
     });
 
@@ -329,10 +331,12 @@ uint32_t dyld_get_min_os_version(const mach_header* mh)
                 case PLATFORM_WATCHOS:  retval = min_version + 0x00070000; return;
                 default: retval = min_version; return;
             }
+#if !defined(__PUREDARWIN__)
         } else if (platform == PLATFORM_IOSSIMULATOR && ::dyld_get_active_platform() == PLATFORM_IOSMAC) {
             //FIXME bringup hack
             versionFound = true;
             retval = 0x000C0000;
+#endif
         }
     });
 
@@ -345,7 +349,9 @@ dyld_platform_t dyld_get_active_platform(void) {
 
 dyld_platform_t dyld_get_base_platform(dyld_platform_t platform) {
     switch (platform) {
+#if !defined(__PUREDARWIN__)
         case PLATFORM_IOSMAC:               return PLATFORM_IOS;
+#endif
         case PLATFORM_IOSSIMULATOR:         return PLATFORM_IOS;
         case PLATFORM_WATCHOSSIMULATOR:     return PLATFORM_WATCHOS;
         case PLATFORM_TVOSSIMULATOR:        return PLATFORM_TVOS;
