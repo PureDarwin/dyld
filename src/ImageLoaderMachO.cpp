@@ -2363,13 +2363,13 @@ void ImageLoaderMachO::doGetDOFSections(const LinkContext& context, std::vector<
 
 bool ImageLoaderMachO::doInitialization(const LinkContext& context)
 {
-	CRSetCrashLogMessage2(this->getPath());
+	CRSetCrashLogMessage(this->getPath());
 
 	// mach-o has -init and static initializers
 	doImageInit(context);
 	doModInitFunctions(context);
 	
-	CRSetCrashLogMessage2(NULL);
+	CRSetCrashLogMessage(NULL);
 	
 	return (fHasDashInit || fHasInitializers);
 }

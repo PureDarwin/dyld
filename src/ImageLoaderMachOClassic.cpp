@@ -765,7 +765,7 @@ void ImageLoaderMachOClassic::resetPreboundLazyPointers(const LinkContext& conte
 
 void ImageLoaderMachOClassic::rebase(const LinkContext& context, uintptr_t slide)
 {
-	CRSetCrashLogMessage2(this->getPath());
+	CRSetCrashLogMessage(this->getPath());
 	const uintptr_t relocBase = this->getRelocBase();
 	
 	// prefetch any LINKEDIT pages needed
@@ -860,7 +860,7 @@ void ImageLoaderMachOClassic::rebase(const LinkContext& context, uintptr_t slide
 	
 	// update stats
 	fgTotalRebaseFixups += fDynamicInfo->nlocrel;
-	CRSetCrashLogMessage2(NULL);
+	CRSetCrashLogMessage(NULL);
 }
 
 
@@ -1897,7 +1897,7 @@ void ImageLoaderMachOClassic::initializeLazyStubs(const LinkContext& context)
 
 void ImageLoaderMachOClassic::doBind(const LinkContext& context, bool forceLazysBound)
 {
-	CRSetCrashLogMessage2(this->getPath());
+	CRSetCrashLogMessage(this->getPath());
 #if __i386__
 	this->initializeLazyStubs(context);
 #endif
@@ -1934,7 +1934,7 @@ void ImageLoaderMachOClassic::doBind(const LinkContext& context, bool forceLazys
 	// set up dyld entry points in image
 	this->setupLazyPointerHandler(context);
 	
-	CRSetCrashLogMessage2(NULL);
+	CRSetCrashLogMessage(NULL);
 }
 
 void ImageLoaderMachOClassic::doBindJustLazies(const LinkContext& context)

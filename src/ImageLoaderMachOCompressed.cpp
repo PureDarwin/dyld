@@ -422,7 +422,7 @@ void ImageLoaderMachOCompressed::throwBadRebaseAddress(uintptr_t address, uintpt
 
 void ImageLoaderMachOCompressed::rebase(const LinkContext& context, uintptr_t slide)
 {
-	CRSetCrashLogMessage2(this->getPath());
+	CRSetCrashLogMessage(this->getPath());
 	const uint8_t* const start = fLinkEditBase + fDyldInfo->rebase_off;
 	const uint8_t* const end = &start[fDyldInfo->rebase_size];
 	const uint8_t* p = start;
@@ -516,7 +516,7 @@ void ImageLoaderMachOCompressed::rebase(const LinkContext& context, uintptr_t sl
 		free((void*)msg);
 		throw newMsg;
 	}
-	CRSetCrashLogMessage2(NULL);
+	CRSetCrashLogMessage(NULL);
 }
 
 const ImageLoader::Symbol* ImageLoaderMachOCompressed::findShallowExportedSymbol(const char* symbol, const ImageLoader** foundIn) const
@@ -905,7 +905,7 @@ void ImageLoaderMachOCompressed::throwBadBindingAddress(uintptr_t address, uintp
 
 void ImageLoaderMachOCompressed::doBind(const LinkContext& context, bool forceLazysBound)
 {
-	CRSetCrashLogMessage2(this->getPath());
+	CRSetCrashLogMessage(this->getPath());
 
 	// if prebound and loaded at prebound address, and all libraries are same as when this was prebound, then no need to bind
 	// note: flat-namespace binaries need to have imports rebound (even if correctly prebound)
@@ -996,7 +996,7 @@ void ImageLoaderMachOCompressed::doBind(const LinkContext& context, bool forceLa
 	// set up dyld entry points in image
 	// do last so flat main executables will have __dyld or __program_vars set up
 	this->setupLazyPointerHandler(context);
-	CRSetCrashLogMessage2(NULL);
+	CRSetCrashLogMessage(NULL);
 }
 
 
