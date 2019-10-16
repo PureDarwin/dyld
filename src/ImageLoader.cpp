@@ -843,7 +843,7 @@ void ImageLoader::recursiveRebase(const LinkContext& context)
 		catch (const char* msg) {
 			// this image is not rebased
 			fState = dyld_image_state_dependents_mapped;
-            CRSetCrashLogMessage2(NULL);
+			CRSetCrashLogMessage(NULL);
 			throw;
 		}
 	}
@@ -911,7 +911,7 @@ void ImageLoader::recursiveBind(const LinkContext& context, bool forceLazysBound
 		catch (const char* msg) {
 			// restore state
 			fState = dyld_image_state_rebased;
-            CRSetCrashLogMessage2(NULL);
+			CRSetCrashLogMessage(NULL);
 			throw;
 		}
 	}
@@ -1478,7 +1478,6 @@ intptr_t ImageLoader::read_sleb128(const uint8_t*& p, const uint8_t* end)
 
 
 VECTOR_NEVER_DESTRUCTED_IMPL(ImageLoader::InterposeTuple);
+#if !defined(__PUREDARWIN__)
 VECTOR_NEVER_DESTRUCTED_IMPL(ImagePair);
-
-
-
+#endif
