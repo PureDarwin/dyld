@@ -988,3 +988,27 @@ sha2_int sha2(unsigned char hval[], unsigned long size,
 #if defined(__cplusplus)
 }
 #endif
+
+unsigned char * CC_SHA1(const void *data, CC_LONG length, uint8_t hash[CC_SHA1_DIGEST_LENGTH]) {
+    CC_SHA1_CTX ctx;
+    CC_SHA1_Init(&ctx);
+    CC_SHA1_Update(&ctx, data, length);
+    CC_SHA1_Final(hash, &ctx);
+    return hash;
+}
+
+unsigned char * CC_SHA256(const void *data, CC_LONG length, uint8_t hash[CC_SHA256_DIGEST_LENGTH]) {
+    CC_SHA256_CTX ctx;
+    sha256_begin(&ctx);
+    CC_SHA256_Update(&ctx, data, length);
+    sha256_end(hash, &ctx);
+    return hash;
+}
+
+unsigned char * CC_SHA384(const void *data, CC_LONG length, uint8_t hash[CC_SHA384_DIGEST_LENGTH]) {
+    CC_SHA512_CTX ctx;
+    CC_SHA512_Init(&ctx);
+    CC_SHA512_Update(&ctx, data, length);
+    sha512_end(hash, &ctx);
+    return hash;
+}
