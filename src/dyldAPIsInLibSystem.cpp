@@ -1572,7 +1572,7 @@ void* dlopen(const char* path, int mode)
     __asm__ volatile("");
     timer.setData4(result);
 
-#if TARGET_OS_OSX
+#if TARGET_OS_OSX && !defined(__PUREDARWIN__)
     // HACK for iOSMac bringup rdar://40945421
     if ( result == nullptr  && dyld_get_active_platform() == PLATFORM_IOSMAC && csr_check(CSR_ALLOW_APPLE_INTERNAL) == 0) {
         if (hasPerThreadBufferFor_dlerror()) {
