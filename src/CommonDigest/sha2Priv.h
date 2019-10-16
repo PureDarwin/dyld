@@ -53,22 +53,10 @@ typedef void sha2_void;
 typedef CC_LONG sha2_32t;
 typedef CC_LONG64 sha2_64t;
 
-typedef CC_SHA256_CTX sha224_ctx;	
+typedef CC_SHA256_CTX sha224_ctx;
 typedef CC_SHA256_CTX sha256_ctx;
 typedef CC_SHA512_CTX sha384_ctx;
 typedef CC_SHA512_CTX sha512_ctx;
-
-#define sha224_begin(c)			CC_SHA224_Init(c)
-#define sha224_end(md, c)		CC_SHA224_Final(md, c)
-
-#define sha256_begin(c)			CC_SHA256_Init(c)
-#define sha256_end(md, c)		CC_SHA256_Final(md, c)
-
-#define sha384_begin(c)			CC_SHA384_Init(c)
-#define sha384_end(md, c)		CC_SHA384_Final(md, c)
-
-#define sha512_begin(c)			CC_SHA512_Init(c)
-#define sha512_end(md, c)		CC_SHA512_Final(md, c)
 
 #endif  /* _CC_SHA2_PRIV_H_ */
 
