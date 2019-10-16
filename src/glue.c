@@ -43,9 +43,6 @@
 #include <libkern/OSAtomic.h>
 #include <errno.h>
 #include <pthread.h>
-#include <corecrypto/ccdigest.h>
-#include <corecrypto/ccsha1.h>
-#include <corecrypto/ccsha2.h>
 
 #if TARGET_IPHONE_SIMULATOR
 	#include "dyldSyscallInterface.h"
@@ -480,11 +477,7 @@ void _ZN4dyld3logEPKcz(const char* format, ...) {
 	va_end(list);
 }
 
-#if __i386__
-void _ZN4dyld4vlogEPKcPc(const char* format, va_list list) {
-#else
 void _ZN4dyld4vlogEPKcP13__va_list_tag(const char* format, va_list list) {
-#endif
 	gSyscallHelpers->vlog(format, list);
 }
 
@@ -1050,41 +1043,6 @@ void _Block_object_dispose(const void* object, int flags)
 	// only support stack blocks in dyld: BLOCK_FIELD_IS_BYREF=8
 	if ( flags != 8 )
 		_ZN4dyld4haltEPKc("_Block_object_dispose()");
-}
-
-
-unsigned char* CC_SHA384(const void* data, unsigned long len, unsigned char* md)
-{
-    const struct ccdigest_info *di = ccsha384_di();
-    ccdigest_di_decl(di, dc);//declares dc array in stack
-    ccdigest_init(di, dc);
-	ccdigest_update(di, dc, len, data);
-    ccdigest_final(di, dc, md);
-    ccdigest_di_clear(di, dc);
-    return NULL;
-}
-
-
-unsigned char* CC_SHA256(const void* data, unsigned long len, unsigned char* md)
-{
-    const struct ccdigest_info *di = ccsha256_di();
-    ccdigest_di_decl(di, dc);//declares dc array in stack
-    ccdigest_init(di, dc);
-	ccdigest_update(di, dc, len, data);
-    ccdigest_final(di, dc, md);
-    ccdigest_di_clear(di, dc);
-    return NULL;
-}
-
-unsigned char* CC_SHA1(const void* data, unsigned long len, unsigned char* md)
-{
-    const struct ccdigest_info *di = ccsha1_di();
-    ccdigest_di_decl(di, dc);//declares dc array in stack
-    ccdigest_init(di, dc);
-    ccdigest_update(di, dc, len, data);
-    ccdigest_final(di, dc, md);
-    ccdigest_di_clear(di, dc);
-    return NULL;
 }
 
 #if !TARGET_IPHONE_SIMULATOR
