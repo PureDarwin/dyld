@@ -1,3 +1,5 @@
+#include "base.xcconfig"
+
 ALIGNMENT[arch=armv7s]     = -Wl,-segalign,0x4000
 
 ENTRY[sdk=*simulator*]     = -Wl,-e,_start_sim
