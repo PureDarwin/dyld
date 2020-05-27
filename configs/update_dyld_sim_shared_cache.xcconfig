@@ -1,6 +1,4 @@
-
-#include "<DEVELOPER_DIR>/AppleInternal/XcodeConfig/PlatformSupportHost.xcconfig"
-
+#include "base.xcconfig"
 
 //:configuration = Debug
 GCC_PREPROCESSOR_DEFINITIONS = BUILDING_CACHE_BUILDER=1 DEBUG=1
