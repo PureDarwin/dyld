@@ -2,11 +2,7 @@
 
 require 'yaml'
 
-if ENV["DRIVERKITROOT"]
-    $availCmd = ENV["SDKROOT"] + ENV["DRIVERKITROOT"] + "/usr/local/libexec/availability.pl";
-else
-    $availCmd = ENV["SDKROOT"] + "/usr/local/libexec/availability.pl";
-end
+$availCmd = ENV["DEPROOT"] + "/usr/local/libexec/availability.pl";
 
 def versionString(vers)
     uvers = ""
