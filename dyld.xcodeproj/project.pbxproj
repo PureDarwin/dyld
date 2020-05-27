@@ -2475,7 +2475,6 @@
 					"-DBUILDING_EMBEDDED_SHARED_CACHE_BUILDER=1",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx.internal;
 				SUPPORTED_PLATFORMS = macosx;
 				TOOLCHAINS = default;
 				USER_HEADER_SEARCH_PATHS = "../launch-cache/";
@@ -2530,7 +2529,6 @@
 					"-DBUILDING_EMBEDDED_SHARED_CACHE_BUILDER=1",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx.internal;
 				SUPPORTED_PLATFORMS = macosx;
 				TOOLCHAINS = default;
 				USER_HEADER_SEARCH_PATHS = "../launch-cache/";
@@ -2591,7 +2589,6 @@
 					"-DBUILDING_EMBEDDED_SHARED_CACHE_BUILDER=1",
 				);
 				PRODUCT_NAME = multi_dyld_shared_cache_builder;
-				SDKROOT = macosx.internal;
 				STRIP_INSTALLED_PRODUCT = NO;
 				USER_HEADER_SEARCH_PATHS = "../launch-cache/";
 				VALID_ARCHS = "x86_64 x86_64h";
@@ -2644,7 +2641,6 @@
 					"-DBUILDING_EMBEDDED_SHARED_CACHE_BUILDER=1",
 				);
 				PRODUCT_NAME = multi_dyld_shared_cache_builder;
-				SDKROOT = macosx.internal;
 				STRIP_INSTALLED_PRODUCT = NO;
 				USER_HEADER_SEARCH_PATHS = "../launch-cache/";
 				VALID_ARCHS = "x86_64 x86_64h";
@@ -2703,7 +2699,6 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx.internal;
 				SUPPORTED_PLATFORMS = "macosx iphoneos watchos appletvos bridgeos";
 				VALID_ARCHS = "arm64 arm64e x86_64 arm64_32 armv7k";
 			};
@@ -2738,7 +2733,6 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx.internal;
 				SUPPORTED_PLATFORMS = "macosx iphoneos watchos appletvos bridgeos";
 				VALID_ARCHS = "arm64 arm64e x86_64 arm64_32 armv7k";
 			};
@@ -2776,7 +2770,6 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_CFLAGS = "-DBOM_SUPPORT=1";
 				PRODUCT_NAME = slc_builder;
-				SDKROOT = macosx.internal;
 				STRIP_INSTALLED_PRODUCT = NO;
 				STRIP_STYLE = "non-global";
 				USER_HEADER_SEARCH_PATHS = "../launch-cache/";
@@ -2819,7 +2812,6 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_CFLAGS = "-DBOM_SUPPORT=1";
 				PRODUCT_NAME = slc_builder;
-				SDKROOT = macosx.internal;
 				STRIP_STYLE = "non-global";
 				USER_HEADER_SEARCH_PATHS = "../launch-cache/";
 				VALID_ARCHS = "x86_64 x86_64h";
@@ -2897,9 +2889,8 @@
 				PRIVATE_HEADERS_FOLDER_PATH = "$(DRIVERKITROOT)/Runtime/usr/local/include/mach-o";
 				PRODUCT_NAME = dyld;
 				PUBLIC_HEADERS_FOLDER_PATH = "$(DRIVERKITROOT)/Runtime/usr/include/mach-o";
-				SDKROOT = driverkit.internal;
+				SDKROOT = driverkit;
 				SKIP_INSTALL = NO;
-				SUPPORTED_PLATFORMS = "macosx iphoneos watchos appletvos";
 				SUPPORTS_TEXT_BASED_API = YES;
 				SYSTEM_FRAMEWORK_SEARCH_PATHS = "$(SDKROOT)/$(DRIVERKITROOT)/Runtime/System/Library/Frameworks $(SDKROOT)/$(DRIVERKITROOT)/System/Library/PrivateFrameworks";
 				SYSTEM_HEADER_SEARCH_PATHS = "$(SDKROOT)/$(DRIVERKITROOT)/Runtime/usr/local/include $(SDKROOT)/$(DRIVERKITROOT)/Runtime/usr/include";
@@ -2962,11 +2953,10 @@
 				PRIVATE_HEADERS_FOLDER_PATH = "$(DRIVERKITROOT)/Runtime/usr/local/include/mach-o";
 				PRODUCT_NAME = dyld;
 				PUBLIC_HEADERS_FOLDER_PATH = "$(DRIVERKITROOT)/Runtime/usr/include/mach-o";
-				SDKROOT = driverkit.internal;
+				SDKROOT = driverkit;
 				SEPARATE_STRIP = YES;
 				SKIP_INSTALL = NO;
 				STRIP_INSTALLED_PRODUCT = YES;
-				SUPPORTED_PLATFORMS = "macosx iphoneos watchos appletvos";
 				SUPPORTS_TEXT_BASED_API = YES;
 				SYSTEM_FRAMEWORK_SEARCH_PATHS = "$(SDKROOT)/$(DRIVERKITROOT)/Runtime/System/Library/Frameworks $(SDKROOT)/$(DRIVERKITROOT)/System/Library/PrivateFrameworks";
 				SYSTEM_HEADER_SEARCH_PATHS = "$(SDKROOT)/$(DRIVERKITROOT)/Runtime/usr/local/include $(SDKROOT)/$(DRIVERKITROOT)/Runtime/usr/include";
@@ -3022,7 +3012,6 @@
 				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
 				OTHER_LDFLAGS = "-stdlib=libc++";
 				PRODUCT_NAME = update_dyld_shared_cache;
-				SDKROOT = macosx.internal;
 				USE_HEADERMAP = NO;
 				VALID_ARCHS = x86_64;
 			};
@@ -3063,7 +3052,6 @@
 				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
 				OTHER_LDFLAGS = "-stdlib=libc++";
 				PRODUCT_NAME = update_dyld_shared_cache;
-				SDKROOT = macosx.internal;
 				STRIP_INSTALLED_PRODUCT = YES;
 				STRIP_STYLE = debugging;
 				USE_HEADERMAP = NO;
@@ -3171,7 +3159,6 @@
 				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
 				OTHER_LDFLAGS = "-stdlib=libc++";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx.internal;
 				SIMULATOR_DIR_NAME = "$(PLATFORM_FAMILY_NAME_$(DEVICE_PLATFORM_NAME)) $(IPHONE_SDK_MARKETING_VERSION)";
 				USE_HEADERMAP = NO;
 				VALID_ARCHS = "x86_64 x86_64h";
@@ -3208,7 +3195,6 @@
 				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
 				OTHER_LDFLAGS = "-stdlib=libc++";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx.internal;
 				SIMULATOR_DIR_NAME = "$(PLATFORM_FAMILY_NAME_$(DEVICE_PLATFORM_NAME)) $(IPHONE_SDK_MARKETING_VERSION)";
 				STRIP_INSTALLED_PRODUCT = YES;
 				STRIP_STYLE = debugging;
@@ -3252,7 +3238,6 @@
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx.internal;
 				SUPPORTED_PLATFORMS = "macosx iphoneos watchos appletvos bridgeos";
 			};
 			name = Debug;
@@ -3284,7 +3269,6 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx.internal;
 				SUPPORTED_PLATFORMS = "macosx iphoneos watchos appletvos bridgeos";
 			};
 			name = Release;
@@ -3331,7 +3315,6 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx.internal;
 			};
 			name = Debug;
 		};
@@ -3373,7 +3356,6 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx.internal;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
@@ -3419,7 +3401,6 @@
 				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
 				OTHER_LDFLAGS = "-stdlib=libc++";
 				PRODUCT_NAME = update_dyld_shared_cache_root_mode;
-				SDKROOT = macosx.internal;
 				USE_HEADERMAP = NO;
 				VALID_ARCHS = x86_64;
 			};
@@ -3460,7 +3441,6 @@
 				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
 				OTHER_LDFLAGS = "-stdlib=libc++";
 				PRODUCT_NAME = update_dyld_shared_cache_root_mode;
-				SDKROOT = macosx.internal;
 				STRIP_INSTALLED_PRODUCT = YES;
 				STRIP_STYLE = debugging;
 				USE_HEADERMAP = NO;
@@ -3482,7 +3462,6 @@
 				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = YES;
 				INSTALL_PATH = "$(INSTALL_LOCATION)/usr/local/bin";
 				PRODUCT_NAME = dyld_shared_cache_util;
-				SDKROOT = macosx.internal;
 				SUPPORTED_PLATFORMS = "macosx iphoneos watchos appletvos bridgeos";
 			};
 			name = Debug;
@@ -3499,7 +3478,6 @@
 				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = YES;
 				INSTALL_PATH = "$(INSTALL_LOCATION)/usr/local/bin";
 				PRODUCT_NAME = dyld_shared_cache_util;
-				SDKROOT = macosx.internal;
 				SKIP_INSTALL = NO;
 				SUPPORTED_PLATFORMS = "macosx iphoneos watchos appletvos bridgeos";
 			};
@@ -3606,7 +3584,6 @@
 					"-Wl,-data_const",
 				);
 				STRIPFLAGS = "-S";
-				SUPPORTED_PLATFORMS = "macosx iphoneos watchos appletvos bridgeos watchsimulator iphonesimulator appletvsimulator";
 				UNSTRIPPED_PRODUCT = NO;
 				VERSIONING_SYSTEM = "apple-generic";
 				WARNING_CFLAGS = (
@@ -3658,7 +3635,6 @@
 					"-Wl,-fixup_chains",
 				);
 				STRIPFLAGS = "-S";
-				SUPPORTED_PLATFORMS = "macosx iphoneos watchos appletvos bridgeos watchsimulator iphonesimulator appletvsimulator";
 				UNSTRIPPED_PRODUCT = NO;
 				VERSIONING_SYSTEM = "apple-generic";
 				WARNING_CFLAGS = (
@@ -3717,7 +3693,6 @@
 				PRODUCT_NAME = dyld;
 				PUBLIC_HEADERS_FOLDER_PATH = "/usr//include/mach-o";
 				SKIP_INSTALL = NO;
-				SUPPORTED_PLATFORMS = "macosx iphoneos watchos appletvos bridgeos watchsimulator iphonesimulator appletvsimulator";
 				SUPPORTS_TEXT_BASED_API = YES;
 				TAPI_VERIFY_MODE = Pedantic;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -3779,7 +3754,6 @@
 				SEPARATE_STRIP = YES;
 				SKIP_INSTALL = NO;
 				STRIP_INSTALLED_PRODUCT = YES;
-				SUPPORTED_PLATFORMS = "macosx iphoneos watchos appletvos bridgeos watchsimulator iphonesimulator appletvsimulator";
 				SUPPORTS_TEXT_BASED_API = YES;
 				TAPI_VERIFY_MODE = Pedantic;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -3848,7 +3822,6 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = ./include;
 				ONLY_ACTIVE_ARCH = YES;
-				SDKROOT = macosx.internal;
 				USER_HEADER_SEARCH_PATHS = "./dyld3 ./dyld3/shared-cache";
 				WARNING_CFLAGS = "-Wimplicit-fallthrough";
 			};
@@ -3892,7 +3865,6 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = ./include;
-				SDKROOT = macosx.internal;
 				USER_HEADER_SEARCH_PATHS = "./dyld3 ./dyld3/shared-cache";
 				WARNING_CFLAGS = "-Wimplicit-fallthrough";
 			};
