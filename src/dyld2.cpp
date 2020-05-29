@@ -78,8 +78,6 @@
 		AMFI_DYLD_OUTPUT_ALLOW_LIBRARY_INTERPOSING = (1 << 6),
 	};
 	extern "C" int amfi_check_dyld_policy_self(uint64_t input_flags, uint64_t* output_flags);
-#else
-	#include <libamfi.h>
 #endif
 
 #include <sandbox.h>
