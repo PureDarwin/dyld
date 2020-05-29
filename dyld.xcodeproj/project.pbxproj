@@ -18,7 +18,7 @@
 				F94182D81E60F0BE00D8EF25 /* PBXTargetDependency */,
 				F94182DA1E60F0C000D8EF25 /* PBXTargetDependency */,
 				F94182DC1E60F16900D8EF25 /* PBXTargetDependency */,
-				C187B90C1FE067590042D3B7 /* PBXTargetDependency */,
+				1F615F502480A7910021D82E /* PBXTargetDependency */,
 			);
 			name = update_dyld_shared_cache;
 			productName = update_dyld_shared_cache;
@@ -46,7 +46,6 @@
 			dependencies = (
 				F9ED4CA70630A78A00DF4E74 /* PBXTargetDependency */,
 				F9ED4CA90630A78A00DF4E74 /* PBXTargetDependency */,
-				37A0AD0F1C16000F00731E50 /* PBXTargetDependency */,
 			);
 			name = all;
 			productName = all;
@@ -393,12 +392,12 @@
 /* End PBXBuildRule section */
 
 /* Begin PBXContainerItemProxy section */
-		37A0AD0E1C16000F00731E50 /* PBXContainerItemProxy */ = {
+		1F615F4F2480A7910021D82E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = F9ED4C8B0630A72300DF4E74 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 37A0AD0A1C15FFF500731E50;
-			remoteInfo = update_dyld_shared_cache;
+			remoteGlobalIDString = C187B8FF1FE063A40042D3B7;
+			remoteInfo = libslc_builder.dylib;
 		};
 		C1033EA722611306004407FB /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -406,13 +405,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = F9D1001114D8D0BA00099D91;
 			remoteInfo = dsc_extractor;
-		};
-		C187B90B1FE067590042D3B7 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = F9ED4C8B0630A72300DF4E74 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = C187B8FF1FE063A40042D3B7;
-			remoteInfo = libslc_builder;
 		};
 		D8668ACF1ECE335F005E7D31 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -2309,20 +2301,15 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		37A0AD0F1C16000F00731E50 /* PBXTargetDependency */ = {
+		1F615F502480A7910021D82E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 37A0AD0A1C15FFF500731E50 /* update_dyld_shared_cache */;
-			targetProxy = 37A0AD0E1C16000F00731E50 /* PBXContainerItemProxy */;
+			target = C187B8FF1FE063A40042D3B7 /* libslc_builder.dylib */;
+			targetProxy = 1F615F4F2480A7910021D82E /* PBXContainerItemProxy */;
 		};
 		C1033EA822611306004407FB /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = F9D1001114D8D0BA00099D91 /* dsc_extractor */;
 			targetProxy = C1033EA722611306004407FB /* PBXContainerItemProxy */;
-		};
-		C187B90C1FE067590042D3B7 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = C187B8FF1FE063A40042D3B7 /* libslc_builder.dylib */;
-			targetProxy = C187B90B1FE067590042D3B7 /* PBXContainerItemProxy */;
 		};
 		D8668AD01ECE335F005E7D31 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
