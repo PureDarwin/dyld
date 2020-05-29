@@ -399,13 +399,6 @@
 			remoteGlobalIDString = C187B8FF1FE063A40042D3B7;
 			remoteInfo = libslc_builder.dylib;
 		};
-		C1033EA722611306004407FB /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = F9ED4C8B0630A72300DF4E74 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = F9D1001114D8D0BA00099D91;
-			remoteInfo = dsc_extractor;
-		};
 		D8668ACF1ECE335F005E7D31 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = F9ED4C8B0630A72300DF4E74 /* Project object */;
@@ -440,20 +433,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = F9D1001114D8D0BA00099D91;
 			remoteInfo = dsc_extractor;
-		};
-		F96543A01E343601003C5540 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = F9ED4C8B0630A72300DF4E74 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = F97C61A61DBAD1A900A84CD7;
-			remoteInfo = dyld_closure_util;
-		};
-		F99B8EB10FEC220C00701838 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = F9ED4C8B0630A72300DF4E74 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = F99B8E550FEC10F600701838;
-			remoteInfo = dyld_shared_cache_util;
 		};
 		F9B4D77F12AD9736000605A6 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -1538,9 +1517,6 @@
 				F921D3160703769A000D1056 /* PBXBuildRule */,
 			);
 			dependencies = (
-				C1033EA822611306004407FB /* PBXTargetDependency */,
-				F99B8EB20FEC220C00701838 /* PBXTargetDependency */,
-				F96543A11E343601003C5540 /* PBXTargetDependency */,
 			);
 			name = dyld;
 			productName = dyld;
@@ -2306,11 +2282,6 @@
 			target = C187B8FF1FE063A40042D3B7 /* libslc_builder.dylib */;
 			targetProxy = 1F615F4F2480A7910021D82E /* PBXContainerItemProxy */;
 		};
-		C1033EA822611306004407FB /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = F9D1001114D8D0BA00099D91 /* dsc_extractor */;
-			targetProxy = C1033EA722611306004407FB /* PBXContainerItemProxy */;
-		};
 		D8668AD01ECE335F005E7D31 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = F97C61A61DBAD1A900A84CD7 /* dyld_closure_util */;
@@ -2335,16 +2306,6 @@
 			isa = PBXTargetDependency;
 			target = F9D1001114D8D0BA00099D91 /* dsc_extractor */;
 			targetProxy = F94182DB1E60F16900D8EF25 /* PBXContainerItemProxy */;
-		};
-		F96543A11E343601003C5540 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = F97C61A61DBAD1A900A84CD7 /* dyld_closure_util */;
-			targetProxy = F96543A01E343601003C5540 /* PBXContainerItemProxy */;
-		};
-		F99B8EB20FEC220C00701838 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = F99B8E550FEC10F600701838 /* dyld_shared_cache_util */;
-			targetProxy = F99B8EB10FEC220C00701838 /* PBXContainerItemProxy */;
 		};
 		F9B4D78012AD9736000605A6 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
