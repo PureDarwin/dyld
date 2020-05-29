@@ -6136,18 +6136,6 @@ _main(const macho_header* mainExecutableMH, uintptr_t mainExecutableSlide,
 	}
 
 #if __MAC_OS_X_VERSION_MIN_REQUIRED
-	// Check to see if we need to override the platform
-	const char* forcedPlatform = _simple_getenv(envp, "DYLD_FORCE_PLATFORM");
-	if (forcedPlatform) {
-		if (strncmp(forcedPlatform, "6", 1) != 0) {
-			halt("DYLD_FORCE_PLATFORM is only supported for platform 6");
-		}
-		const dyld3::MachOFile* mf = (dyld3::MachOFile*)sMainExecutableMachHeader;
-		if (mf->allowsAlternatePlatform()) {
-			gProcessInfo->platform = PLATFORM_IOSMAC;
-		}
-	}
-
 	// if this is host dyld, check to see if iOS simulator is being run
 	const char* rootPath = _simple_getenv(envp, "DYLD_ROOT_PATH");
 	if ( (rootPath != NULL) ) {
@@ -6222,15 +6210,6 @@ _main(const macho_header* mainExecutableMH, uintptr_t mainExecutableSlide,
 			} else if ( strcmp(useClosures, "1") == 0 ) {
 #if __MAC_OS_X_VERSION_MIN_REQUIRED
 
-#if __i386__
-				// don't support dyld3 for 32-bit macOS
-#else
-				// Also don't support dyld3 for iOSMac right now
-				if ( gProcessInfo->platform != PLATFORM_IOSMAC ) {
-					sClosureMode = ClosureMode::On;
-				}
-#endif // __i386__
-
 #else
 				sClosureMode = ClosureMode::On;
 #endif // __MAC_OS_X_VERSION_MIN_REQUIRED
@@ -6253,20 +6232,7 @@ _main(const macho_header* mainExecutableMH, uintptr_t mainExecutableSlide,
 		checkEnvironmentVariables(envp);
 		defaultUninitializedFallbackPaths(envp);
 	}
-#if __MAC_OS_X_VERSION_MIN_REQUIRED
-	if ( gProcessInfo->platform == PLATFORM_IOSMAC ) {
-		gLinkContext.rootPaths = parseColonList("/System/iOSSupport", NULL);
-		gLinkContext.iOSonMac = true;
-		if ( sEnv.DYLD_FALLBACK_LIBRARY_PATH == sLibraryFallbackPaths )
-			sEnv.DYLD_FALLBACK_LIBRARY_PATH = sRestrictedLibraryFallbackPaths;
-		if ( sEnv.DYLD_FALLBACK_FRAMEWORK_PATH == sFrameworkFallbackPaths )
-			sEnv.DYLD_FALLBACK_FRAMEWORK_PATH = sRestrictedFrameworkFallbackPaths;
-	}
-	else if ( ((dyld3::MachOFile*)mainExecutableMH)->supportsPlatform(dyld3::Platform::driverKit) ) {
-		gLinkContext.driverKit = true;
-		gLinkContext.sharedRegionMode = ImageLoader::kDontUseSharedRegion;
-	}
-#endif
+
 	if ( sEnv.DYLD_PRINT_OPTS )
 		printOptions(argv);
 	if ( sEnv.DYLD_PRINT_ENV ) 
