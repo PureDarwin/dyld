@@ -1286,13 +1286,8 @@ static void setRunInitialzersOldWay()
 
 static bool sandboxBlocked(const char* path, const char* kind)
 {
-#if TARGET_OS_SIMULATOR
-	// sandbox calls not yet supported in simulator runtime
+	// sandbox calls not yet supported
 	return false;
-#else
-	sandbox_filter_type filter = (sandbox_filter_type)(SANDBOX_FILTER_PATH | SANDBOX_CHECK_NO_REPORT);
-	return ( sandbox_check(getpid(), kind, filter, path) > 0 );
-#endif
 }
 
 bool sandboxBlockedMmap(const char* path)
@@ -5063,70 +5058,7 @@ static void loadInsertedDylib(const char* path)
 
 static void configureProcessRestrictions(const macho_header* mainExecutableMH, const char* envp[])
 {
-	uint64_t amfiInputFlags = 0;
-#if TARGET_OS_SIMULATOR
-	amfiInputFlags |= AMFI_DYLD_INPUT_PROC_IN_SIMULATOR;
-#elif __MAC_OS_X_VERSION_MIN_REQUIRED
-	if ( hasRestrictedSegment(mainExecutableMH) )
-		amfiInputFlags |= AMFI_DYLD_INPUT_PROC_HAS_RESTRICT_SEG;
-#elif __IPHONE_OS_VERSION_MIN_REQUIRED
-	if ( isFairPlayEncrypted(mainExecutableMH) )
-		amfiInputFlags |= AMFI_DYLD_INPUT_PROC_IS_ENCRYPTED;
-#endif
-	uint64_t amfiOutputFlags = 0;
-	const char* amfiFake = nullptr;
-	if ( dyld3::internalInstall() && dyld3::BootArgs::enableDyldTestMode() ) {
-		amfiFake = _simple_getenv(envp, "DYLD_AMFI_FAKE");
-	}
-	if ( amfiFake != nullptr ) {
-		amfiOutputFlags = hexToUInt64(amfiFake, nullptr);
-	}
-	if ( (amfiFake != nullptr) || (amfi_check_dyld_policy_self(amfiInputFlags, &amfiOutputFlags) == 0) ) {
-		gLinkContext.allowAtPaths 				= (amfiOutputFlags & AMFI_DYLD_OUTPUT_ALLOW_AT_PATH);
-		gLinkContext.allowEnvVarsPrint			= (amfiOutputFlags & AMFI_DYLD_OUTPUT_ALLOW_PRINT_VARS);
-		gLinkContext.allowEnvVarsPath			= (amfiOutputFlags & AMFI_DYLD_OUTPUT_ALLOW_PATH_VARS);
-		gLinkContext.allowEnvVarsSharedCache	= (amfiOutputFlags & AMFI_DYLD_OUTPUT_ALLOW_CUSTOM_SHARED_CACHE);
-		gLinkContext.allowClassicFallbackPaths	= (amfiOutputFlags & AMFI_DYLD_OUTPUT_ALLOW_FALLBACK_PATHS);
-		gLinkContext.allowInsertFailures    	= (amfiOutputFlags & AMFI_DYLD_OUTPUT_ALLOW_FAILED_LIBRARY_INSERTION);
-#ifdef AMFI_RETURNS_INTERPOSING_FLAG
-		gLinkContext.allowInterposing	    	= (amfiOutputFlags & AMFI_DYLD_OUTPUT_ALLOW_LIBRARY_INTERPOSING);
-#else
-		gLinkContext.allowInterposing	    	= true;
-#endif
-	}
-	else {
-#if __MAC_OS_X_VERSION_MIN_REQUIRED
-		// support chrooting from old kernel
-		bool isRestricted = false;
-		bool libraryValidation = false;
-		// any processes with setuid or setgid bit set or with __RESTRICT segment is restricted
-		if ( issetugid() || hasRestrictedSegment(mainExecutableMH) ) {
-			isRestricted = true;
-		}
-		bool usingSIP = (csr_check(CSR_ALLOW_TASK_FOR_PID) != 0);
-		uint32_t flags;
-		if ( csops(0, CS_OPS_STATUS, &flags, sizeof(flags)) != -1 ) {
-			// On OS X CS_RESTRICT means the program was signed with entitlements
-			if ( ((flags & CS_RESTRICT) == CS_RESTRICT) && usingSIP ) {
-				isRestricted = true;
-			}
-			// Library Validation loosens searching but requires everything to be code signed
-			if ( flags & CS_REQUIRE_LV ) {
-				isRestricted = false;
-				libraryValidation = true;
-			}
-		}
-		gLinkContext.allowAtPaths                = !isRestricted;
-		gLinkContext.allowEnvVarsPrint           = !isRestricted;
-		gLinkContext.allowEnvVarsPath            = !isRestricted;
-		gLinkContext.allowEnvVarsSharedCache     = !libraryValidation || !usingSIP;
-		gLinkContext.allowClassicFallbackPaths   = !isRestricted;
-		gLinkContext.allowInsertFailures         = false;
-		gLinkContext.allowInterposing         	 = true;
-#else
-		halt("amfi_check_dyld_policy_self() failed\n");
-#endif
-	}
+	// AMFI restrictions not supported in PureDarwin
 }
 
 // called by _dyld_register_driverkit_main()
@@ -5270,7 +5202,7 @@ static const SyscallHelpers sSysCalls = {
 		// Added in version 9
 		&kdebug_trace_string,
 		// Added in version 10
-		&amfi_check_dyld_policy_self,
+		nullptr,
 		// Added in version 11
 		&notifyMonitoringDyldMain,
 		&notifyMonitoringDyld,
