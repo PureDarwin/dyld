@@ -1890,7 +1890,3 @@ intptr_t ImageLoader::read_sleb128(const uint8_t*& p, const uint8_t* end)
 
 
 VECTOR_NEVER_DESTRUCTED_IMPL(ImageLoader::InterposeTuple);
-VECTOR_NEVER_DESTRUCTED_IMPL(ImagePair);
-
-
-
