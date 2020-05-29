@@ -334,7 +334,6 @@ dyld_platform_t dyld_get_active_platform(void) {
 
 dyld_platform_t dyld_get_base_platform(dyld_platform_t platform) {
     switch (platform) {
-        case PLATFORM_IOSMAC:               return PLATFORM_IOS;
         case PLATFORM_IOSSIMULATOR:         return PLATFORM_IOS;
         case PLATFORM_WATCHOSSIMULATOR:     return PLATFORM_WATCHOS;
         case PLATFORM_TVOSSIMULATOR:        return PLATFORM_TVOS;
