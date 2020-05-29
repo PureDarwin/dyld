@@ -1140,10 +1140,10 @@
 				F9ED4CBB0630A7AA00DF4E74 /* src */,
 				F9ED4CC30630A7BE00DF4E74 /* doc */,
 				F9ED4CBE0630A7B100DF4E74 /* include */,
-				F9ED4C990630A76000DF4E74 /* Products */,
 				F96D19A41D9363B7007AF3CE /* dyld3 */,
 				F939373D0A94FC4700070A07 /* launch-cache */,
 				F94C22231E513CA90079E5DD /* Frameworks */,
+				F9ED4C990630A76000DF4E74 /* Products */,
 			);
 			indentWidth = 4;
 			sourceTree = "<group>";
