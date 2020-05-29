@@ -51,18 +51,6 @@
 			name = all;
 			productName = all;
 		};
-		F9F6F4271C1FB0A700BD8FED /* dyld_tests */ = {
-			isa = PBXAggregateTarget;
-			buildConfigurationList = F9F6F42A1C1FB0A700BD8FED /* Build configuration list for PBXAggregateTarget "dyld_tests" */;
-			buildPhases = (
-				F9F6F42B1C1FB0AE00BD8FED /* build */,
-			);
-			dependencies = (
-				F97FF3661C237F97000ACDD2 /* PBXTargetDependency */,
-			);
-			name = dyld_tests;
-			productName = dyld_tests;
-		};
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
@@ -467,13 +455,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = F97C61A61DBAD1A900A84CD7;
 			remoteInfo = dyld_closure_util;
-		};
-		F97FF3651C237F97000ACDD2 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = F9ED4C8B0630A72300DF4E74 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = F97FF3551C23638F000ACDD2;
-			remoteInfo = nocr;
 		};
 		F99B8EB10FEC220C00701838 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -1640,9 +1621,6 @@
 					F97FF3551C23638F000ACDD2 = {
 						CreatedOnToolsVersion = 8.0;
 					};
-					F9F6F4271C1FB0A700BD8FED = {
-						CreatedOnToolsVersion = 8.0;
-					};
 				};
 			};
 			buildConfigurationList = F9D8C7E9087B087300E93EFB /* Build configuration list for PBXProject "dyld" */;
@@ -1677,7 +1655,6 @@
 				F9F2A5580F7AEE9800B7C9EB /* libdsc */,
 				F9D1001114D8D0BA00099D91 /* dsc_extractor */,
 				C187B8FF1FE063A40042D3B7 /* libslc_builder.dylib */,
-				F9F6F4271C1FB0A700BD8FED /* dyld_tests */,
 				F97FF3551C23638F000ACDD2 /* nocr */,
 				37F597CC2061EB4200F9B6F9 /* dyld_usage */,
 				F9556D3820C1F896004DF62A /* dyldinfo */,
@@ -1986,21 +1963,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "# link with all .a files in /usr/local/lib/dyld\nls -1 ${SDKROOT}/usr/local/lib/dyld/*.a > ${DERIVED_SOURCES_DIR}/archives.txt \n\n# link with crash report archive if it exists\nif [ -f ${SDKROOT}/usr/local/lib/libCrashReporterClient.a ]\nthen\n  echo \\\"${SDKROOT}/usr/local/lib/libCrashReporterClient.a\\\" >> ${DERIVED_SOURCES_DIR}/archives.txt \nfi\n\n# link with crypto archive if it exists\nif [ -f ${SDKROOT}/usr/local/lib/libcorecrypto_static.a ]\nthen\n  echo \\\"${SDKROOT}/usr/local/lib/libcorecrypto_static.a\\\" >> ${DERIVED_SOURCES_DIR}/archives.txt\nfi\n";
-			showEnvVarsInLog = 0;
-		};
-		F9F6F42B1C1FB0AE00BD8FED /* build */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 12;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = build;
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "${SRCROOT}/testing/build_tests.py && cp ${SRCROOT}/testing/run_all_dyld_tests.py ${DSTROOT}/AppleInternal/CoreOS/tests/dyld/\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -2392,11 +2354,6 @@
 			target = F97C61A61DBAD1A900A84CD7 /* dyld_closure_util */;
 			targetProxy = F96543A01E343601003C5540 /* PBXContainerItemProxy */;
 		};
-		F97FF3661C237F97000ACDD2 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = F97FF3551C23638F000ACDD2 /* nocr */;
-			targetProxy = F97FF3651C237F97000ACDD2 /* PBXContainerItemProxy */;
-		};
 		F99B8EB20FEC220C00701838 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = F99B8E550FEC10F600701838 /* dyld_shared_cache_util */;
@@ -2697,8 +2654,6 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SUPPORTED_PLATFORMS = "macosx iphoneos watchos appletvos bridgeos";
-				VALID_ARCHS = "arm64 arm64e x86_64 arm64_32 armv7k";
 			};
 			name = Debug;
 		};
@@ -2731,8 +2686,6 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SUPPORTED_PLATFORMS = "macosx iphoneos watchos appletvos bridgeos";
-				VALID_ARCHS = "arm64 arm64e x86_64 arm64_32 armv7k";
 			};
 			name = Release;
 		};
@@ -3089,7 +3042,6 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SUPPORTED_PLATFORMS = "macosx iphoneos watchos appletvos bridgeos";
 			};
 			name = Debug;
 		};
@@ -3118,7 +3070,6 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SUPPORTED_PLATFORMS = "macosx iphoneos watchos appletvos bridgeos";
 			};
 			name = Release;
 		};
@@ -3236,7 +3187,6 @@
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SUPPORTED_PLATFORMS = "macosx iphoneos watchos appletvos bridgeos";
 			};
 			name = Debug;
 		};
@@ -3267,7 +3217,6 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SUPPORTED_PLATFORMS = "macosx iphoneos watchos appletvos bridgeos";
 			};
 			name = Release;
 		};
@@ -3460,7 +3409,6 @@
 				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = YES;
 				INSTALL_PATH = "$(INSTALL_LOCATION)/usr/local/bin";
 				PRODUCT_NAME = dyld_shared_cache_util;
-				SUPPORTED_PLATFORMS = "macosx iphoneos watchos appletvos bridgeos";
 			};
 			name = Debug;
 		};
@@ -3477,7 +3425,6 @@
 				INSTALL_PATH = "$(INSTALL_LOCATION)/usr/local/bin";
 				PRODUCT_NAME = dyld_shared_cache_util;
 				SKIP_INSTALL = NO;
-				SUPPORTED_PLATFORMS = "macosx iphoneos watchos appletvos bridgeos";
 			};
 			name = Release;
 		};
@@ -3886,7 +3833,6 @@
 					"$(OTHER_CFLAGS)",
 				);
 				PRODUCT_NAME = dsc;
-				SUPPORTED_PLATFORMS = "macosx iphoneos watchos appletvos bridgeos";
 			};
 			name = Debug;
 		};
@@ -3916,26 +3862,7 @@
 					"$(OTHER_CFLAGS)",
 				);
 				PRODUCT_NAME = dsc;
-				SUPPORTED_PLATFORMS = "macosx iphoneos watchos appletvos bridgeos";
 				ZERO_LINK = NO;
-			};
-			name = Release;
-		};
-		F9F6F4281C1FB0A700BD8FED /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SUPPORTED_PLATFORMS = "macosx iphoneos watchos appletvos bridgeos watchsimulator iphonesimulator appletvsimulator";
-			};
-			name = Debug;
-		};
-		F9F6F4291C1FB0A700BD8FED /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SUPPORTED_PLATFORMS = "macosx iphoneos watchos appletvos bridgeos watchsimulator iphonesimulator appletvsimulator";
 			};
 			name = Release;
 		};
@@ -4118,15 +4045,6 @@
 			buildConfigurations = (
 				F9F2A55A0F7AEE9900B7C9EB /* Debug */,
 				F9F2A55B0F7AEE9900B7C9EB /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		F9F6F42A1C1FB0A700BD8FED /* Build configuration list for PBXAggregateTarget "dyld_tests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				F9F6F4281C1FB0A700BD8FED /* Debug */,
-				F9F6F4291C1FB0A700BD8FED /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
