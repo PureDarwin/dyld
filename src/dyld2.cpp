@@ -6281,8 +6281,6 @@ _main(const macho_header* mainExecutableMH, uintptr_t mainExecutableSlide,
 		// First test to see if we forced in dyld2 via a kernel boot-arg
 		if ( dyld3::BootArgs::forceDyld2() ) {
 			sClosureMode = ClosureMode::Off;
-		} else if ( inDenyList(sExecPath) ) {
-			sClosureMode = ClosureMode::Off;
 		} else if ( sEnv.hasOverride ) {
 			sClosureMode = ClosureMode::Off;
 		} else if ( dyld3::BootArgs::forceDyld3() ) {
