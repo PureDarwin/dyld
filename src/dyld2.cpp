@@ -80,12 +80,6 @@
 	extern "C" int amfi_check_dyld_policy_self(uint64_t input_flags, uint64_t* output_flags);
 #endif
 
-#include <sandbox.h>
-#include <sandbox/private.h>
-#if __has_feature(ptrauth_calls)
-	#include <ptrauth.h>
-#endif
-
 extern "C" int __fork();
 
 #include <array>
