@@ -614,6 +614,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		1F6E44152481CA3300B80DEF /* configure-archives.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = "configure-archives.sh"; path = "bin/configure-archives.sh"; sourceTree = SOURCE_ROOT; };
 		3703A1241B38C1B300ADBA7F /* dyld_shared_cache_builder */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = dyld_shared_cache_builder; sourceTree = BUILT_PRODUCTS_DIR; };
 		373C58EF219CE478003442D5 /* BootArgs.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = BootArgs.cpp; path = dyld3/BootArgs.cpp; sourceTree = "<group>"; };
 		373C58F0219CE478003442D5 /* BootArgs.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = BootArgs.h; path = dyld3/BootArgs.h; sourceTree = "<group>"; };
@@ -1086,6 +1087,7 @@
 		F971DD121A4A0E0700BBDD52 /* configs */ = {
 			isa = PBXGroup;
 			children = (
+				1F6E44152481CA3300B80DEF /* configure-archives.sh */,
 				F971DD131A4A0E0700BBDD52 /* base.xcconfig */,
 				F971DD141A4A0E0700BBDD52 /* dyld.xcconfig */,
 				F971DD151A4A0E0700BBDD52 /* libdyld.xcconfig */,
@@ -1140,10 +1142,10 @@
 				F9ED4CBB0630A7AA00DF4E74 /* src */,
 				F9ED4CC30630A7BE00DF4E74 /* doc */,
 				F9ED4CBE0630A7B100DF4E74 /* include */,
-				F9ED4C990630A76000DF4E74 /* Products */,
 				F96D19A41D9363B7007AF3CE /* dyld3 */,
 				F939373D0A94FC4700070A07 /* launch-cache */,
 				F94C22231E513CA90079E5DD /* Frameworks */,
+				F9ED4C990630A76000DF4E74 /* Products */,
 			);
 			indentWidth = 4;
 			sourceTree = "<group>";
@@ -1907,6 +1909,7 @@
 			files = (
 			);
 			inputPaths = (
+				"$(SRCROOT)/bin/configure-archives.sh",
 			);
 			name = "configure archives";
 			outputPaths = (
@@ -1914,7 +1917,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# link with all .a files in /usr/local/lib/dyld\nls -1 ${DEPROOT}/usr/local/lib/dyld/*.a > ${DERIVED_SOURCES_DIR}/archives.txt \n\n# link with crash report archive if it exists\nif [ -f ${DEPROOT}/usr/local/lib/libCrashReporterClient.a ]\nthen\n  echo \\\"${DEPROOT}/usr/local/lib/libCrashReporterClient.a\\\" >> ${DERIVED_SOURCES_DIR}/archives.txt \nfi\n\n# link with crypto archive if it exists\nif [ -f ${DEPROOT}/usr/local/lib/libcorecrypto_static.a ]\nthen\n  echo \\\"${DEPROOT}/usr/local/lib/libcorecrypto_static.a\\\" >> ${DERIVED_SOURCES_DIR}/archives.txt\nfi\n";
+			shellScript = ". \"${SRCROOT}/bin/configure-archives.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
