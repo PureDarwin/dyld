@@ -28,6 +28,7 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <mach/mach.h>
+#include <assert.h>
 
 #if !TARGET_OS_DRIVERKIT && (BUILDING_LIBDYLD || BUILDING_DYLD)
   #include <CrashReporterClient.h>
