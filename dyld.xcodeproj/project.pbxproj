@@ -1509,7 +1509,6 @@
 				F9ED4C950630A76000DF4E74 /* Sources */,
 				F907E2490FA6469000BFEDBD /* install iPhone file */,
 				F99B8EB60FEC236500701838 /* suppress macosx dyld_shared_cache_util */,
-				371C117D208ADFC700FD9036 /* Suppress simulator dyld_usage */,
 			);
 			buildRules = (
 				F921D318070376B0000D1056 /* PBXBuildRule */,
@@ -1645,21 +1644,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/bash;
 			shellScript = "echo \"\" > ${DERIVED_FILE_DIR}/dyld_cache_config.h\n\nif [ -z \"${ARM_SDK}\" ]; then\n    # if iOS SDK not available, use MacOSX SDK\n    ARM_SDK=`xcodebuild -sdk macosx.internal -version Path`\nfi\n\nSHARED_REGION_FILE=\"${ARM_SDK}/usr/include/mach/shared_region.h\"\n\n\nif [ -r \"${SHARED_REGION_FILE}\" ]; then\n    echo -n \"#define ARM_SHARED_REGION_START \"  >> ${DERIVED_FILE_DIR}/dyld_cache_config.h\n    awk '/define SHARED_REGION_BASE_ARM[ \\t]/ { print $3;}' \"${SHARED_REGION_FILE}\" >> ${DERIVED_FILE_DIR}/dyld_cache_config.h\n    echo \"\"  >> ${DERIVED_FILE_DIR}/dyld_cache_config.h\n\n    echo -n \"#define ARM_SHARED_REGION_SIZE \"  >> ${DERIVED_FILE_DIR}/dyld_cache_config.h\n    awk '/define SHARED_REGION_SIZE_ARM[ \\t]/ { print $3;}' \"${SHARED_REGION_FILE}\" >> ${DERIVED_FILE_DIR}/dyld_cache_config.h\n    echo \"\"  >> ${DERIVED_FILE_DIR}/dyld_cache_config.h\n\n    echo -n \"#define ARM64_SHARED_REGION_START \"  >> ${DERIVED_FILE_DIR}/dyld_cache_config.h\n    awk '/define SHARED_REGION_BASE_ARM64[ \\t]/ { print $3;}' \"${SHARED_REGION_FILE}\" >> ${DERIVED_FILE_DIR}/dyld_cache_config.h\n    echo \"\"  >> ${DERIVED_FILE_DIR}/dyld_cache_config.h\n\n    echo -n \"#define ARM64_SHARED_REGION_SIZE \"  >> ${DERIVED_FILE_DIR}/dyld_cache_config.h\n    awk '/define SHARED_REGION_SIZE_ARM64[ \\t]/ { print $3;}' \"${SHARED_REGION_FILE}\" >> ${DERIVED_FILE_DIR}/dyld_cache_config.h\n    echo \"\"  >> ${DERIVED_FILE_DIR}/dyld_cache_config.h\n\n    grep SHARED_REGION_BASE_ARM64_32 \"${SHARED_REGION_FILE}\" > /dev/null 2>&1\n    if [ \"$?\" -eq \"0\" ]; then\n        echo -n \"#define ARM64_32_SHARED_REGION_START \"  >> ${DERIVED_FILE_DIR}/dyld_cache_config.h\n        awk '/define SHARED_REGION_BASE_ARM64_32/ { print $3;}' \"${SHARED_REGION_FILE}\" >> ${DERIVED_FILE_DIR}/dyld_cache_config.h\n        echo \"\"  >> ${DERIVED_FILE_DIR}/dyld_cache_config.h\n\n        echo -n \"#define ARM64_32_SHARED_REGION_SIZE \"  >> ${DERIVED_FILE_DIR}/dyld_cache_config.h\n        awk '/define SHARED_REGION_SIZE_ARM64_32/ { print $3;}' \"${SHARED_REGION_FILE}\" >> ${DERIVED_FILE_DIR}/dyld_cache_config.h\n        echo \"\"  >> ${DERIVED_FILE_DIR}/dyld_cache_config.h\n    fi\nelse\n    echo \"ERROR: File needed to configure update_dyld_shared_cache does not exist '${SHARED_REGION_FILE}'\"\n    exit 1\nfi\n\nif [ -r \"${ARM_SDK}/AppleInternal/DirtyDataFiles/dirty-data-segments-order.txt\" ]; then\n    mkdir -p \"${DSTROOT}/${INSTALL_LOCATION}/usr/local/bin\"\n    cp \"${ARM_SDK}/AppleInternal/DirtyDataFiles/dirty-data-segments-order.txt\"  \"${DSTROOT}/${INSTALL_LOCATION}/usr/local/bin\"\nfi\nif [ -r \"${ARM_SDK}/AppleInternal/OrderFiles/dylib-order.txt\" ]; then\n    mkdir -p \"${DSTROOT}/${INSTALL_LOCATION}/usr/local/bin\"\n    cp \"${ARM_SDK}/AppleInternal/OrderFiles/dylib-order.txt\"  \"${DSTROOT}/${INSTALL_LOCATION}/usr/local/bin\"\nfi\n\n";
-			showEnvVarsInLog = 0;
-		};
-		371C117D208ADFC700FD9036 /* Suppress simulator dyld_usage */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 8;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Suppress simulator dyld_usage";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 1;
-			shellPath = /bin/sh;
-			shellScript = "# dyld_usage requires libktrace which is not available in the simulator\n# The target builds a dummy app that we delete\nif [ \"${PRODUCT_NAME}\" != \"dyld_sim\" ]\nthen\nOBJROOT_USAGE=\"${TARGET_TEMP_DIR}/Objects_Usage\"\nxcodebuild install -target dyld_usage SDKROOT=\"${SDKROOT}\" MACOSX_DEPLOYMENT_TARGET=${MACOSX_DEPLOYMENT_TARGET} OBJROOT=\"${OBJROOT_USAGE}\" SRCROOT=\"${SRCROOT}\" DSTROOT=\"${DSTROOT}\" SYMROOT=\"${SYMROOT}\" RC_ProjectSourceVersion=\"${RC_ProjectSourceVersion}\"\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		377685F31AC4B27D00026E6C /* make dyld_cache_config.h */ = {
