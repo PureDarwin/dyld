@@ -72,8 +72,6 @@
 		37554F4B1E3F76E900407388 /* AdjustDylibSegments.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F98692091DC3EF6C00CBEDE6 /* AdjustDylibSegments.cpp */; };
 		37554F571E3F7B6400407388 /* PathOverrides.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F9F76FAE1E08CFF200828678 /* PathOverrides.cpp */; };
 		37554F581E3F7B6500407388 /* PathOverrides.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F9F76FAE1E08CFF200828678 /* PathOverrides.cpp */; };
-		376ABDB61C592CC0009F0011 /* Metabom.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 376ED1D71C46F2710051DD54 /* Metabom.framework */; };
-		376ED1D81C46F2710051DD54 /* Metabom.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 376ED1D71C46F2710051DD54 /* Metabom.framework */; };
 		378EE3B11BE88C47001C99FB /* Bom.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37F7A5961BB363820039043A /* Bom.framework */; };
 		378EE3B21BE88C4A001C99FB /* Bom.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37F7A5961BB363820039043A /* Bom.framework */; };
 		37908A2E1E3A8632009613FA /* Manifest.mm in Sources */ = {isa = PBXBuildFile; fileRef = 37908A281E3A853E009613FA /* Manifest.mm */; };
@@ -193,7 +191,6 @@
 		F93D73511F8FF7C2007D9413 /* MachOFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F9A5E6191F5F1BFA0030C490 /* MachOFile.cpp */; };
 		F93D73521F8FF7C2007D9413 /* MachOLoaded.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F9A5E6151F5C967C0030C490 /* MachOLoaded.cpp */; };
 		F93D73531F8FF7C2007D9413 /* MachOAnalyzer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F9A5E6181F5F1BFA0030C490 /* MachOAnalyzer.cpp */; };
-		F93F46521FA420850060D9F9 /* execserver.defs in Sources */ = {isa = PBXBuildFile; fileRef = F93F46511FA420630060D9F9 /* execserver.defs */; settings = {ATTRIBUTES = (Server, ); }; };
 		F94182D51E60A2F100D8EF25 /* OptimizerBranches.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F98692111DC3EF6C00CBEDE6 /* OptimizerBranches.cpp */; };
 		F9460DCE1E0A000600FEC613 /* PathOverrides.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F9F76FAE1E08CFF200828678 /* PathOverrides.cpp */; };
 		F94C22251E513CA90079E5DD /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F94C22241E513CA90079E5DD /* CoreFoundation.framework */; };
@@ -228,7 +225,6 @@
 		F977DDCB1E53BF5500609230 /* SharedCacheRuntime.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F977DDC91E53BEA700609230 /* SharedCacheRuntime.cpp */; };
 		F97C619F1D9829AA00A84CD7 /* libdyldEntryVector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F97C619E1D98292700A84CD7 /* libdyldEntryVector.cpp */; };
 		F97C61A21D9CAE3500A84CD7 /* Logging.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F97C61A01D9CA6B800A84CD7 /* Logging.cpp */; };
-		F97FF3611C23640C000ACDD2 /* nocr.c in Sources */ = {isa = PBXBuildFile; fileRef = F97FF35F1C236402000ACDD2 /* nocr.c */; };
 		F97FF3641C237F68000ACDD2 /* nocr.1 in install man page */ = {isa = PBXBuildFile; fileRef = F97FF3631C237F5C000ACDD2 /* nocr.1 */; };
 		F98692171DC3EFD500CBEDE6 /* update_dyld_shared_cache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F98692151DC3EF6C00CBEDE6 /* update_dyld_shared_cache.cpp */; };
 		F98692181DC3EFD700CBEDE6 /* DyldSharedCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F98692141DC3EF6C00CBEDE6 /* DyldSharedCache.cpp */; };
@@ -618,7 +614,6 @@
 		3703A1241B38C1B300ADBA7F /* dyld_shared_cache_builder */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = dyld_shared_cache_builder; sourceTree = BUILT_PRODUCTS_DIR; };
 		373C58EF219CE478003442D5 /* BootArgs.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = BootArgs.cpp; path = dyld3/BootArgs.cpp; sourceTree = "<group>"; };
 		373C58F0219CE478003442D5 /* BootArgs.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = BootArgs.h; path = dyld3/BootArgs.h; sourceTree = "<group>"; };
-		376ED1D71C46F2710051DD54 /* Metabom.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metabom.framework; path = AppleInternal/Library/Frameworks/Metabom.framework; sourceTree = SDKROOT; };
 		377686021AC4B27D00026E6C /* multi_dyld_shared_cache_builder */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = multi_dyld_shared_cache_builder; sourceTree = BUILT_PRODUCTS_DIR; };
 		37908A271E3A853E009613FA /* dyld_shared_cache_builder.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = dyld_shared_cache_builder.mm; path = "dyld3/shared-cache/dyld_shared_cache_builder.mm"; sourceTree = "<group>"; };
 		37908A281E3A853E009613FA /* Manifest.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = Manifest.mm; path = "dyld3/shared-cache/Manifest.mm"; sourceTree = "<group>"; };
@@ -651,9 +646,6 @@
 		C1D268341FE0A52D009F115B /* ClosureFileSystemPhysical.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ClosureFileSystemPhysical.cpp; path = dyld3/ClosureFileSystemPhysical.cpp; sourceTree = "<group>"; };
 		C1F003CB213F3CB4002D9DC9 /* ClosureFileSystemNull.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ClosureFileSystemNull.cpp; path = dyld3/ClosureFileSystemNull.cpp; sourceTree = "<group>"; };
 		C1F003D1213F3CCF002D9DC9 /* ClosureFileSystemNull.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ClosureFileSystemNull.h; path = dyld3/ClosureFileSystemNull.h; sourceTree = "<group>"; };
-		DE728E4C210CD6A100EB5409 /* index.rst */ = {isa = PBXFileReference; lastKnownFileType = text; path = index.rst; sourceTree = "<group>"; };
-		DE728E4E210CD6A100EB5409 /* conf.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = conf.py; sourceTree = "<group>"; };
-		DE728E51210CD6A100EB5409 /* dyld_usage.rst */ = {isa = PBXFileReference; lastKnownFileType = text; path = dyld_usage.rst; sourceTree = "<group>"; };
 		DE728E52210CD6B700EB5409 /* dyld_usage.1 */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.man; path = dyld_usage.1; sourceTree = "<group>"; };
 		EF799FE9070D27BB00F78484 /* dyld.1 */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.man; name = dyld.1; path = doc/man/man1/dyld.1; sourceTree = SOURCE_ROOT; };
 		EF799FEB070D27BB00F78484 /* dladdr.3 */ = {isa = PBXFileReference; explicitFileType = text.man; fileEncoding = 30; name = dladdr.3; path = doc/man/man3/dladdr.3; sourceTree = SOURCE_ROOT; };
@@ -676,7 +668,6 @@
 		F93937400A94FC4700070A07 /* dyld_cache_format.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dyld_cache_format.h; sourceTree = "<group>"; };
 		F93937410A94FC4700070A07 /* FileAbstraction.hpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = FileAbstraction.hpp; sourceTree = "<group>"; };
 		F93937430A94FC4700070A07 /* MachOFileAbstraction.hpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = MachOFileAbstraction.hpp; sourceTree = "<group>"; };
-		F93F46511FA420630060D9F9 /* execserver.defs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.mig; name = execserver.defs; path = testing/nocr/execserver.defs; sourceTree = "<group>"; };
 		F94182DE1E60FFDC00D8EF25 /* update_dyld_sim_shared_cache.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = update_dyld_sim_shared_cache.xcconfig; sourceTree = "<group>"; };
 		F94942B21E6796D40019AE08 /* closured.1 */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.man; path = closured.1; sourceTree = "<group>"; };
 		F94C22241E513CA90079E5DD /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
@@ -711,7 +702,6 @@
 		F97C61A11D9CA6B800A84CD7 /* Logging.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Logging.h; path = dyld3/Logging.h; sourceTree = "<group>"; usesTabs = 0; };
 		F97C61A71DBAD1A900A84CD7 /* dyld_closure_util */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = dyld_closure_util; sourceTree = BUILT_PRODUCTS_DIR; };
 		F97FF3561C23638F000ACDD2 /* nocr */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = nocr; sourceTree = BUILT_PRODUCTS_DIR; };
-		F97FF35F1C236402000ACDD2 /* nocr.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = nocr.c; path = testing/nocr/nocr.c; sourceTree = "<group>"; };
 		F97FF3631C237F5C000ACDD2 /* nocr.1 */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.man; name = nocr.1; path = ../../../testing/nocr/nocr.1; sourceTree = "<group>"; };
 		F981BB8B170FC24400A686D6 /* dyldSyscallInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = dyldSyscallInterface.h; path = src/dyldSyscallInterface.h; sourceTree = "<group>"; };
 		F98692001DC3EF4800CBEDE6 /* Diagnostics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Diagnostics.h; path = dyld3/Diagnostics.h; sourceTree = "<group>"; usesTabs = 0; };
@@ -804,7 +794,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				376ABDB61C592CC0009F0011 /* Metabom.framework in Frameworks */,
 				378EE3B21BE88C4A001C99FB /* Bom.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -813,7 +802,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				376ED1D81C46F2710051DD54 /* Metabom.framework in Frameworks */,
 				378EE3B11BE88C47001C99FB /* Bom.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -913,41 +901,6 @@
 			path = doc/tracing;
 			sourceTree = SOURCE_ROOT;
 		};
-		DE728E4B210CD6A100EB5409 /* rst */ = {
-			isa = PBXGroup;
-			children = (
-				DE728E4C210CD6A100EB5409 /* index.rst */,
-				DE728E4D210CD6A100EB5409 /* _templates */,
-				DE728E4E210CD6A100EB5409 /* conf.py */,
-				DE728E4F210CD6A100EB5409 /* _static */,
-				DE728E50210CD6A100EB5409 /* _build */,
-				DE728E51210CD6A100EB5409 /* dyld_usage.rst */,
-			);
-			name = rst;
-			path = doc/rst;
-			sourceTree = "<group>";
-		};
-		DE728E4D210CD6A100EB5409 /* _templates */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = _templates;
-			sourceTree = "<group>";
-		};
-		DE728E4F210CD6A100EB5409 /* _static */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = _static;
-			sourceTree = "<group>";
-		};
-		DE728E50210CD6A100EB5409 /* _build */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = _build;
-			sourceTree = "<group>";
-		};
 		EF799FE7070D27BB00F78484 /* man */ = {
 			isa = PBXGroup;
 			children = (
@@ -1022,7 +975,6 @@
 			children = (
 				37F597D62061ED3200F9B6F9 /* libktrace.tbd */,
 				37F7A5961BB363820039043A /* Bom.framework */,
-				376ED1D71C46F2710051DD54 /* Metabom.framework */,
 				F94C22241E513CA90079E5DD /* CoreFoundation.framework */,
 			);
 			name = Frameworks;
@@ -1178,8 +1130,6 @@
 		F9ED4CBB0630A7AA00DF4E74 /* src */ = {
 			isa = PBXGroup;
 			children = (
-				F93F46511FA420630060D9F9 /* execserver.defs */,
-				F97FF35F1C236402000ACDD2 /* nocr.c */,
 				37F597D42061ECFF00F9B6F9 /* dyld_usage.cpp */,
 				F9ED4CC60630A7F100DF4E74 /* dyld_debugger.cpp */,
 				F9ED4CC70630A7F100DF4E74 /* dyld2.cpp */,
@@ -1238,7 +1188,6 @@
 			isa = PBXGroup;
 			children = (
 				EF799FE7070D27BB00F78484 /* man */,
-				DE728E4B210CD6A100EB5409 /* rst */,
 				37918ABF2058908000F39A77 /* tracing */,
 			);
 			name = doc;
@@ -2129,8 +2078,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F93F46521FA420850060D9F9 /* execserver.defs in Sources */,
-				F97FF3611C23640C000ACDD2 /* nocr.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
